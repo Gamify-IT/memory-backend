@@ -3,10 +3,10 @@ package de.unistuttgart.memorybackend.data;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import java.util.UUID;
 
 @Entity
 @Data

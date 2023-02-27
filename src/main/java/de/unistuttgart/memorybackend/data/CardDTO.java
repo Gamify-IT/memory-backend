@@ -1,8 +1,6 @@
 package de.unistuttgart.memorybackend.data;
 
-
 import java.util.UUID;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -20,8 +18,6 @@ public class CardDTO {
      */
     @Nullable
     private UUID id;
-
-
 
     String content;
 

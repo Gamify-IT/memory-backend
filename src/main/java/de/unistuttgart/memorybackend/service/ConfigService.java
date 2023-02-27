@@ -5,14 +5,15 @@ import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.CardPairRepository;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-import java.util.UUID;
-
+@ComponentScan("de.unistuttgart.memorybackend.data.mapper")
 @Service
 public class ConfigService {
 
@@ -41,13 +42,13 @@ public class ConfigService {
             throw new IllegalArgumentException("id is null");
         }
         return configurationRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                String.format("There is no configuration with id %s.", id)
-                        )
-                );
+            .findById(id)
+            .orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    String.format("There is no configuration with id %s.", id)
+                )
+            );
     }
 
     /**
@@ -62,7 +63,7 @@ public class ConfigService {
             throw new IllegalArgumentException("configurationDTO is null");
         }
         final Configuration savedConfiguration = configurationRepository.save(
-                configurationMapper.configurationDTOToConfiguration(configurationDTO)
+            configurationMapper.configurationDTOToConfiguration(configurationDTO)
         );
         return configurationMapper.configurationToConfigurationDTO(savedConfiguration);
     }
@@ -138,12 +139,12 @@ public class ConfigService {
         }
         final Configuration configuration = getConfiguration(id);
         final CardPair cardPair = getCardPairInConfiguration(cardPairId, configuration)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                String.format("Card pair with ID %s does not exist in configuration %s.", cardPairId, configuration)
-                        )
-                );
+            .orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    String.format("Card pair with ID %s does not exist in configuration %s.", cardPairId, configuration)
+                )
+            );
         configuration.removeCardPair(cardPair);
         configurationRepository.save(configuration);
         cardPairRepository.delete(cardPair);
@@ -161,9 +162,9 @@ public class ConfigService {
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public CardPairDTO updateCardPairFromConfiguration(
-            final UUID id,
-            final UUID cardPairId,
-            final CardPairDTO cardPairDTO
+        final UUID id,
+        final UUID cardPairId,
+        final CardPairDTO cardPairDTO
     ) {
         if (id == null || cardPairId == null || cardPairDTO == null) {
             throw new IllegalArgumentException("id or cardPairId or cardPairDTO is null");
@@ -171,8 +172,8 @@ public class ConfigService {
         final Configuration configuration = getConfiguration(id);
         if (getCardPairInConfiguration(cardPairId, configuration).isEmpty()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    String.format("CardPair with ID %s does not exist in configuration %s.", cardPairId, configuration)
+                HttpStatus.NOT_FOUND,
+                String.format("CardPair with ID %s does not exist in configuration %s.", cardPairId, configuration)
             );
         }
         final CardPair cardPair = cardPairMapper.cardPairDTOToCardPair(cardPairDTO);
@@ -190,17 +191,14 @@ public class ConfigService {
      * @throws ResponseStatusException  when card pair with the id in the given configuration does not exist
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
-    private Optional<CardPair> getCardPairInConfiguration(
-            final UUID cardPairId,
-            final Configuration configuration
-    ) {
+    private Optional<CardPair> getCardPairInConfiguration(final UUID cardPairId, final Configuration configuration) {
         if (cardPairId == null || configuration == null) {
             throw new IllegalArgumentException("cardPairId or configuration is null");
         }
         return configuration
-                .getPairs()
-                .parallelStream()
-                .filter(filteredCardPair -> filteredCardPair.getId().equals(cardPairId))
-                .findAny();
+            .getPairs()
+            .parallelStream()
+            .filter(filteredCardPair -> filteredCardPair.getId().equals(cardPairId))
+            .findAny();
     }
 }

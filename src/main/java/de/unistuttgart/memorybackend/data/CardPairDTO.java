@@ -1,7 +1,6 @@
 package de.unistuttgart.memorybackend.data;
 
 import java.util.UUID;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -20,8 +19,8 @@ public class CardPairDTO {
     CardDTO card1;
     CardDTO card2;
 
-        public CardPairDTO(final CardDTO card1, final CardDTO card2) {
-                this.card1 = card1;
-                this.card2 = card2;
-            }
+    public CardPairDTO(final CardDTO card1, final CardDTO card2) {
+        this.card1 = card1;
+        this.card2 = card2;
+    }
 }

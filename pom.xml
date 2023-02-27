@@ -147,7 +147,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.unistuttgart.chickenshockbackend.ChickenshockServiceApplication</mainClass>
+							<mainClass>de.unistuttgart.memorybackend.MemoryBackendApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

@@ -3,12 +3,11 @@ package de.unistuttgart.memorybackend.data;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -25,11 +24,11 @@ public class Configuration {
         this.pairs = pairs;
     }
 
-    public void addCardPair(final CardPair cardPair){
+    public void addCardPair(final CardPair cardPair) {
         this.pairs.add(cardPair);
     }
 
-    public void removeCardPair(final CardPair cardPair){
+    public void removeCardPair(final CardPair cardPair) {
         this.pairs.remove(cardPair);
     }
 }
