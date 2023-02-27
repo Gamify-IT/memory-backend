@@ -1,11 +1,14 @@
 package de.unistuttgart.memorybackend.data;
 
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.lang.Nullable;
 
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConfigurationDTO {
 
@@ -15,9 +18,9 @@ public class ConfigurationDTO {
     @Nullable
     private UUID id;
 
-    CardPairDTO[] pairs;
+    List<CardPairDTO> pairs;
 
-        public ConfigurationDTO(final CardPairDTO[] pairs){
+        public ConfigurationDTO(final List<CardPairDTO> pairs){
         this.pairs = pairs;
         }
 }

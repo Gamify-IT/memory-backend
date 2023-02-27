@@ -4,12 +4,14 @@ package de.unistuttgart.memorybackend.data;
 import java.util.UUID;
 
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.lang.Nullable;
 
 /**
  * The CardDTO.class contains the card related information
  */
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CardDTO {
 
