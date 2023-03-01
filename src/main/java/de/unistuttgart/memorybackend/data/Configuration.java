@@ -1,23 +1,25 @@
 package de.unistuttgart.memorybackend.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Configuration {
 
     @Id
+    @GeneratedValue(generator = "uuid")
     UUID id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<CardPair> pairs;
 
     public Configuration(final List<CardPair> pairs) {

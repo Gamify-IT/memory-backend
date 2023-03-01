@@ -1,13 +1,15 @@
 package de.unistuttgart.memorybackend.controller;
 
 import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
-import de.unistuttgart.memorybackend.data.CardPairDTO;
-import de.unistuttgart.memorybackend.data.ConfigurationDTO;
+import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
 import de.unistuttgart.memorybackend.service.ConfigService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,14 @@ public class ConfigController {
 
     @Autowired
     private ConfigurationMapper configurationMapper;
+
+    @PostConstruct
+    public void createDummyData(){
+        List<CardPair> pairs = Arrays.asList(new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)));
+        final Configuration configuration = new Configuration(pairs);
+        Configuration savedConfig = configurationRepository.save(configuration);
+        System.out.println(savedConfig.getId());
+    }
 
     @Operation(summary = "Get all configurations")
     @GetMapping("")
