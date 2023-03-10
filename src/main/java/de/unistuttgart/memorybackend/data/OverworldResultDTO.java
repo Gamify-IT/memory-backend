@@ -20,10 +20,10 @@ import org.springframework.validation.annotation.Validated;
 public class OverworldResultDTO {
 
     /**
-     * The name of the minigame. In this case "FINITEQUIZ".
+     * The name of the minigame. In this case "MEMORY".
      */
     @NotNull(message = "game cannot be null")
-    final String game = "FINITEQUIZ";
+    final String game = "MEMORY";
 
     /**
      * The ID of the configuration that was used for the game.
