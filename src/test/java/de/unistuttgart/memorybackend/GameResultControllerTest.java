@@ -8,15 +8,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
 import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
 import de.unistuttgart.memorybackend.repositories.GameResultRepository;
-import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
+import jakarta.servlet.http.Cookie;
 import java.io.IOException;
 import java.util.*;
-
-import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

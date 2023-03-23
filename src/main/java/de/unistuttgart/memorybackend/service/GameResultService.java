@@ -38,32 +38,30 @@ public class GameResultService {
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public void saveGameResult(
-            final @Valid GameResultDTO gameResultDTO,
-            final String userId,
-            final String accessToken
+        final @Valid GameResultDTO gameResultDTO,
+        final String userId,
+        final String accessToken
     ) {
         if (gameResultDTO == null || userId == null || accessToken == null) {
             throw new IllegalArgumentException("gameResultDTO or userId is null");
         }
-        final int resultScore = calculateResultScore(
-                gameResultDTO.isCompleted()
-        );
+        final int resultScore = calculateResultScore(gameResultDTO.isCompleted());
         final OverworldResultDTO resultDTO = new OverworldResultDTO(
-                gameResultDTO.getConfigurationAsUUID(),
-                resultScore,
-                userId
+            gameResultDTO.getConfigurationAsUUID(),
+            resultScore,
+            userId
         );
         try {
             resultClient.submit(accessToken, resultDTO);
             final GameResult result = new @Valid GameResult(
-                    gameResultDTO.isCompleted(),
-                    gameResultDTO.getConfigurationAsUUID(),
-                    userId
+                gameResultDTO.isCompleted(),
+                gameResultDTO.getConfigurationAsUUID(),
+                userId
             );
             gameResultRepository.save(result);
         } catch (final FeignException.BadGateway badGateway) {
             final String warning =
-                    "The Overworld backend is currently not available. The result was NOT saved. Please try again later";
+                "The Overworld backend is currently not available. The result was NOT saved. Please try again later";
             log.error(warning + badGateway);
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, warning);
         } catch (final FeignException.NotFound notFound) {

@@ -8,7 +8,6 @@ import de.unistuttgart.memorybackend.service.ConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +32,6 @@ public class ConfigController {
     @Autowired
     private JWTValidatorService jwtValidatorService;
 
-
     @Autowired
     private ConfigService configService;
 
@@ -41,8 +39,15 @@ public class ConfigController {
     private ConfigurationMapper configurationMapper;
 
     @PostConstruct
-    public void createDummyData(){
-        List<CardPair> pairs = Arrays.asList(new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)),new CardPair(new Card("text", CardType.TEXT),new Card("text", CardType.TEXT)));
+    public void createDummyData() {
+        List<CardPair> pairs = Arrays.asList(
+            new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT)),
+            new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT)),
+            new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT)),
+            new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT)),
+            new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT)),
+            new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT))
+        );
         final Configuration configuration = new Configuration(pairs);
         Configuration savedConfig = configurationRepository.save(configuration);
         System.out.println(savedConfig.getId());

@@ -1,6 +1,5 @@
 package de.unistuttgart.memorybackend.controller;
 
-
 import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
 import de.unistuttgart.memorybackend.data.GameResultDTO;
 import de.unistuttgart.memorybackend.service.GameResultService;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Validated
 public class GameResultController {
+
     @Autowired
     GameResultService gameResultService;
 
@@ -27,8 +27,8 @@ public class GameResultController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public GameResultDTO saveGameResult(
-            @CookieValue("access_token") final String accessToken,
-            @Valid @RequestBody final GameResultDTO gameResultDTO
+        @CookieValue("access_token") final String accessToken,
+        @Valid @RequestBody final GameResultDTO gameResultDTO
     ) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         final String userId = jwtValidatorService.extractUserId(accessToken);

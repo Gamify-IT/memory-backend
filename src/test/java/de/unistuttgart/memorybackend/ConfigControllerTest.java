@@ -6,25 +6,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.unistuttgart.memorybackend.data.CardType;
+import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
 import de.unistuttgart.memorybackend.data.Card;
 import de.unistuttgart.memorybackend.data.CardDTO;
-import de.unistuttgart.memorybackend.data.mapper.CardMapper;
-import de.unistuttgart.memorybackend.repositories.CardRepository;
 import de.unistuttgart.memorybackend.data.CardPair;
 import de.unistuttgart.memorybackend.data.CardPairDTO;
-import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
-import de.unistuttgart.memorybackend.repositories.CardPairRepository;
+import de.unistuttgart.memorybackend.data.CardType;
 import de.unistuttgart.memorybackend.data.Configuration;
 import de.unistuttgart.memorybackend.data.ConfigurationDTO;
+import de.unistuttgart.memorybackend.data.mapper.CardMapper;
+import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
+import de.unistuttgart.memorybackend.repositories.CardPairRepository;
+import de.unistuttgart.memorybackend.repositories.CardRepository;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
-import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
+import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,7 +87,9 @@ class ConfigControllerTest {
         final CardPair cardPairImage = new CardPair(cardImage, cardImage);
         final CardPair cardPairMarkdown = new CardPair(cardMarkdown, cardMarkdown);
 
-        final Configuration configuration = new Configuration(Arrays.asList(cardPairText,cardPairImage, cardPairMarkdown));
+        final Configuration configuration = new Configuration(
+            Arrays.asList(cardPairText, cardPairImage, cardPairMarkdown)
+        );
 
         initialConfig = configurationRepository.save(configuration);
         initialConfigDTO = configurationMapper.configurationToConfigurationDTO(initialConfig);
@@ -105,12 +107,12 @@ class ConfigControllerTest {
     @Test
     void getConfigurations() throws Exception {
         final MvcResult result = mvc
-                .perform(get(API_URL).cookie(cookie).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+            .perform(get(API_URL).cookie(cookie).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
 
         final List<ConfigurationDTO> configurations = Arrays.asList(
-                objectMapper.readValue(result.getResponse().getContentAsString(), ConfigurationDTO[].class)
+            objectMapper.readValue(result.getResponse().getContentAsString(), ConfigurationDTO[].class)
         );
 
         assertSame(1, configurations.size());
@@ -120,30 +122,29 @@ class ConfigControllerTest {
     @Test
     void getSpecificConfiguration_DoesNotExist_ThrowsNotFound() throws Exception {
         mvc
-                .perform(get(API_URL + "/" + UUID.randomUUID()).cookie(cookie).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+            .perform(get(API_URL + "/" + UUID.randomUUID()).cookie(cookie).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 
     @Test
     void createConfiguration() throws Exception {
-        final ConfigurationDTO newCreatedConfigurationDTO = new ConfigurationDTO(Arrays.asList(new CardPairDTO(new CardDTO("text", CardType.TEXT),new CardDTO("text", CardType.TEXT))));
+        final ConfigurationDTO newCreatedConfigurationDTO = new ConfigurationDTO(
+            Arrays.asList(new CardPairDTO(new CardDTO("text", CardType.TEXT), new CardDTO("text", CardType.TEXT)))
+        );
         final String bodyValue = objectMapper.writeValueAsString(newCreatedConfigurationDTO);
         final MvcResult result = mvc
-                .perform(post(API_URL).cookie(cookie).content(bodyValue).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andReturn();
+            .perform(post(API_URL).cookie(cookie).content(bodyValue).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andReturn();
 
         final ConfigurationDTO newCreatedConfigurationDTOResponse = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ConfigurationDTO.class
+            result.getResponse().getContentAsString(),
+            ConfigurationDTO.class
         );
 
         assertNotNull(newCreatedConfigurationDTOResponse.getId());
         // because cardPair object are not equals, we have to compare the content without id
-        assertSame(
-                newCreatedConfigurationDTO.getPairs().size(),
-                newCreatedConfigurationDTOResponse.getPairs().size()
-        );
+        assertSame(newCreatedConfigurationDTO.getPairs().size(), newCreatedConfigurationDTOResponse.getPairs().size());
         for (final CardPairDTO pairs : newCreatedConfigurationDTO.getPairs()) {
             assertTrue(newCreatedConfigurationDTOResponse.getPairs().stream().anyMatch(pairs::equalsContent));
         }
@@ -152,22 +153,25 @@ class ConfigControllerTest {
 
     @Test
     void updateConfiguration() throws Exception {
-        final CardPairDTO newCardPairDTO = new CardPairDTO(new CardDTO("test", CardType.TEXT),new CardDTO("test", CardType.TEXT));
+        final CardPairDTO newCardPairDTO = new CardPairDTO(
+            new CardDTO("test", CardType.TEXT),
+            new CardDTO("test", CardType.TEXT)
+        );
         initialConfigDTO.setPairs(Arrays.asList(newCardPairDTO));
         final String bodyValue = objectMapper.writeValueAsString(initialConfigDTO);
         final MvcResult result = mvc
-                .perform(
-                        put(API_URL + "/" + initialConfig.getId())
-                                .cookie(cookie)
-                                .content(bodyValue)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andReturn();
+            .perform(
+                put(API_URL + "/" + initialConfig.getId())
+                    .cookie(cookie)
+                    .content(bodyValue)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andReturn();
 
         final ConfigurationDTO updatedConfigurationDTOResponse = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ConfigurationDTO.class
+            result.getResponse().getContentAsString(),
+            ConfigurationDTO.class
         );
 
         // because cardPair object are not equals, we have to compare the content without id
@@ -182,15 +186,15 @@ class ConfigControllerTest {
     @Test
     void deleteConfiguration() throws Exception {
         final MvcResult result = mvc
-                .perform(
-                        delete(API_URL + "/" + initialConfig.getId()).cookie(cookie).contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andReturn();
+            .perform(
+                delete(API_URL + "/" + initialConfig.getId()).cookie(cookie).contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andReturn();
 
         final ConfigurationDTO deletedConfigurationDTOResponse = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ConfigurationDTO.class
+            result.getResponse().getContentAsString(),
+            ConfigurationDTO.class
         );
 
         assertEquals(initialConfigDTO.getId(), deletedConfigurationDTOResponse.getId());
@@ -202,24 +206,24 @@ class ConfigControllerTest {
     @Test
     void addCardPairToExistingConfiguration() throws Exception {
         final CardPairDTO addedCardPairDTO = new CardPairDTO(
-                new CardDTO("yay", CardType.TEXT),
-                new CardDTO("nay", CardType.TEXT)
+            new CardDTO("yay", CardType.TEXT),
+            new CardDTO("nay", CardType.TEXT)
         );
 
         final String bodyValue = objectMapper.writeValueAsString(addedCardPairDTO);
         final MvcResult result = mvc
-                .perform(
-                        post(API_URL + "/" + initialConfig.getId() + "/cardPairs")
-                                .cookie(cookie)
-                                .content(bodyValue)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isCreated())
-                .andReturn();
+            .perform(
+                post(API_URL + "/" + initialConfig.getId() + "/cardPairs")
+                    .cookie(cookie)
+                    .content(bodyValue)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isCreated())
+            .andReturn();
 
         final CardPairDTO newAddedCardPairResponse = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                CardPairDTO.class
+            result.getResponse().getContentAsString(),
+            CardPairDTO.class
         );
 
         assertTrue(addedCardPairDTO.equalsContent(newAddedCardPairResponse));
@@ -232,38 +236,38 @@ class ConfigControllerTest {
         assertTrue(cardPairRepository.existsById(removedCardPairDTO.getId()));
 
         final MvcResult result = mvc
-                .perform(
-                        delete(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + removedCardPairDTO.getId())
-                                .cookie(cookie)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andReturn();
+            .perform(
+                delete(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + removedCardPairDTO.getId())
+                    .cookie(cookie)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andReturn();
 
         final CardPairDTO removedCardPairDTOResult = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                CardPairDTO.class
+            result.getResponse().getContentAsString(),
+            CardPairDTO.class
         );
 
         assertEquals(removedCardPairDTO.getId(), removedCardPairDTOResult.getId());
         assertTrue(removedCardPairDTO.equalsContent(removedCardPairDTOResult));
         assertSame(
-                initialConfig.getPairs().size() - 1,
-                configurationRepository.findById(initialConfig.getId()).get().getPairs().size()
+            initialConfig.getPairs().size() - 1,
+            configurationRepository.findById(initialConfig.getId()).get().getPairs().size()
         );
-       assertFalse(cardPairRepository.existsById(removedCardPairDTO.getId()));
+        assertFalse(cardPairRepository.existsById(removedCardPairDTO.getId()));
     }
 
     @Test
     void removeCardPairFromExistingConfigurationNotFound() throws Exception {
         mvc
-                .perform(
-                        delete(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + UUID.randomUUID())
-                                .cookie(cookie)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isNotFound())
-                .andReturn();
+            .perform(
+                delete(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + UUID.randomUUID())
+                    .cookie(cookie)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isNotFound())
+            .andReturn();
     }
 
     @Test
@@ -275,18 +279,18 @@ class ConfigControllerTest {
 
         final String bodyValue = objectMapper.writeValueAsString(updatedCardPairDTO);
         final MvcResult result = mvc
-                .perform(
-                        put(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + updatedCardPair.getId())
-                                .cookie(cookie)
-                                .content(bodyValue)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andReturn();
+            .perform(
+                put(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + updatedCardPair.getId())
+                    .cookie(cookie)
+                    .content(bodyValue)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andReturn();
 
         final CardPairDTO updatedCardPairResultDTO = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                CardPairDTO.class
+            result.getResponse().getContentAsString(),
+            CardPairDTO.class
         );
 
         assertTrue(updatedCardPairDTO.equalsContent(updatedCardPairResultDTO));
@@ -303,13 +307,13 @@ class ConfigControllerTest {
 
         final String bodyValue = objectMapper.writeValueAsString(updatedCardPairDTO);
         mvc
-                .perform(
-                        put(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + UUID.randomUUID())
-                                .cookie(cookie)
-                                .content(bodyValue)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isNotFound())
-                .andReturn();
+            .perform(
+                put(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + UUID.randomUUID())
+                    .cookie(cookie)
+                    .content(bodyValue)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isNotFound())
+            .andReturn();
     }
 }

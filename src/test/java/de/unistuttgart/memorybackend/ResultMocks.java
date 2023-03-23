@@ -13,21 +13,21 @@ public class ResultMocks {
 
     public static void setupMockBooksResponse(final WireMockServer mockService) throws IOException {
         mockService.stubFor(
-                WireMock
-                        .post(WireMock.urlEqualTo("/internal/submit-game-pass"))
-                        .willReturn(
-                                WireMock
-                                        .aResponse()
-                                        .withStatus(HttpStatus.OK.value())
-                                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                                        .withBody(
-                                                copyToString(
-                                                        ResultMocks.class.getClassLoader()
-                                                                .getResourceAsStream("payload/get-results-response.json"),
-                                                        defaultCharset()
-                                                )
-                                        )
+            WireMock
+                .post(WireMock.urlEqualTo("/internal/submit-game-pass"))
+                .willReturn(
+                    WireMock
+                        .aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(
+                            copyToString(
+                                ResultMocks.class.getClassLoader()
+                                    .getResourceAsStream("payload/get-results-response.json"),
+                                defaultCharset()
+                            )
                         )
+                )
         );
     }
 }
