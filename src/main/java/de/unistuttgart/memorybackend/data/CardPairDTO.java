@@ -1,6 +1,7 @@
 package de.unistuttgart.memorybackend.data;
 
 import java.util.UUID;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,12 @@ public class CardPairDTO {
     public CardPairDTO(final CardDTO card1, final CardDTO card2) {
         this.card1 = card1;
         this.card2 = card2;
+    }
+
+    public boolean equalsContent(final CardPairDTO other) {
+        if (this == other) return true;
+        if (other == null) return false;
+        return (
+                Objects.equals(card1, other.card1) && Objects.equals(card2, other.card2));
     }
 }
