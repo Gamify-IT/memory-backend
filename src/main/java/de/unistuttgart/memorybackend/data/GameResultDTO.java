@@ -21,4 +21,17 @@ public class GameResultDTO {
 
     @NotNull(message = "configurationAsUUID cannot be null")
     private UUID configurationAsUUID;
+
+    @NotNull(message = "playerId cannot be null")
+    private String playerId;
+
+    public GameResultDTO(
+            final boolean isCompleted,
+            final UUID configurationAsUUID,
+            final String playerId
+    ) {
+        this.isCompleted = isCompleted;
+        this.configurationAsUUID = configurationAsUUID;
+        this.playerId = playerId;
+    }
 }
