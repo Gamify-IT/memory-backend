@@ -213,7 +213,7 @@ class ConfigControllerTest {
         final String bodyValue = objectMapper.writeValueAsString(addedCardPairDTO);
         final MvcResult result = mvc
             .perform(
-                post(API_URL + "/" + initialConfig.getId() + "/cardPairs")
+                post(API_URL + "/" + initialConfig.getId() + "/cardPair")
                     .cookie(cookie)
                     .content(bodyValue)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -237,7 +237,7 @@ class ConfigControllerTest {
 
         final MvcResult result = mvc
             .perform(
-                delete(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + removedCardPairDTO.getId())
+                delete(API_URL + "/" + initialConfig.getId() + "/cardPair/" + removedCardPairDTO.getId())
                     .cookie(cookie)
                     .contentType(MediaType.APPLICATION_JSON)
             )
@@ -262,7 +262,7 @@ class ConfigControllerTest {
     void removeCardPairFromExistingConfigurationNotFound() throws Exception {
         mvc
             .perform(
-                delete(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + UUID.randomUUID())
+                delete(API_URL + "/" + initialConfig.getId() + "/cardPair/" + UUID.randomUUID())
                     .cookie(cookie)
                     .contentType(MediaType.APPLICATION_JSON)
             )
@@ -274,13 +274,13 @@ class ConfigControllerTest {
     void updateCardPairFromExistingConfiguration() throws Exception {
         final CardPair updatedCardPair = initialConfig.getPairs().stream().findFirst().get();
         final CardPairDTO updatedCardPairDTO = cardPairMapper.cardPairToCardPairDTO(updatedCardPair);
-        final CardDTO newCard = new CardDTO("test1", CardType.TEXT);
+        final CardDTO newCard = updatedCardPairDTO.getCard2();
         updatedCardPairDTO.setCard1(newCard);
 
         final String bodyValue = objectMapper.writeValueAsString(updatedCardPairDTO);
         final MvcResult result = mvc
             .perform(
-                put(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + updatedCardPair.getId())
+                put(API_URL + "/" + initialConfig.getId() + "/cardPair/" + updatedCardPair.getId())
                     .cookie(cookie)
                     .content(bodyValue)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -308,7 +308,7 @@ class ConfigControllerTest {
         final String bodyValue = objectMapper.writeValueAsString(updatedCardPairDTO);
         mvc
             .perform(
-                put(API_URL + "/" + initialConfig.getId() + "/cardPairs/" + UUID.randomUUID())
+                put(API_URL + "/" + initialConfig.getId() + "/cardPair/" + UUID.randomUUID())
                     .cookie(cookie)
                     .content(bodyValue)
                     .contentType(MediaType.APPLICATION_JSON)
