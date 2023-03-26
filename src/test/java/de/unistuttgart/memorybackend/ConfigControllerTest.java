@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import org.apache.tomcat.util.digester.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,10 +81,12 @@ class ConfigControllerTest {
 
     @BeforeEach
     public void createBasicData() {
+
         configurationRepository.deleteAll();
         final Card cardText = new Card("text1", CardType.TEXT);
         final Card cardImage = new Card("text2", CardType.IMAGE);
         final Card cardMarkdown = new Card("text2", CardType.MARKDOWN);
+
         final CardPair cardPairText = new CardPair(cardText, cardText);
         final CardPair cardPairImage = new CardPair(cardImage, cardImage);
         final CardPair cardPairMarkdown = new CardPair(cardMarkdown, cardMarkdown);
@@ -274,15 +278,16 @@ class ConfigControllerTest {
     void updateCardPairFromExistingConfiguration() throws Exception {
         final CardPair updatedCardPair = initialConfig.getPairs().stream().findFirst().get();
         final CardPairDTO updatedCardPairDTO = cardPairMapper.cardPairToCardPairDTO(updatedCardPair);
-        final CardDTO newCard = updatedCardPairDTO.getCard2();
-        updatedCardPairDTO.setCard1(newCard);
+        final Card newCard = new Card("nice", CardType.TEXT);
+        final CardDTO newCard1 = cardMapper.cardToCardDTO(newCard);
+        updatedCardPairDTO.setCard1(newCard1);
 
         final String bodyValue = objectMapper.writeValueAsString(updatedCardPairDTO);
         final MvcResult result = mvc
             .perform(
                 put(API_URL + "/" + initialConfig.getId() + "/cardPair/" + updatedCardPair.getId())
                     .cookie(cookie)
-                    .content(bodyValue)
+                    .content(bodyValue + newCard.getId() + updatedCardPair.getCard2().getId())
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
@@ -294,8 +299,13 @@ class ConfigControllerTest {
         );
 
         assertTrue(updatedCardPairDTO.equalsContent(updatedCardPairResultDTO));
-        assertEquals(newCard, updatedCardPairResultDTO.getCard1());
-        assertEquals(newCard, cardPairRepository.findById(updatedCardPair.getId()).get().getCard1());
+        assertEquals(newCard.getContent(), updatedCardPairResultDTO.getCard1().getContent());
+        assertEquals(newCard.getType(), updatedCardPairResultDTO.getCard1().getType());
+        assertEquals(newCard.getContent(), cardPairRepository.findById(updatedCardPair.getId()).get()
+                .getCard1().getContent());
+        assertEquals(newCard.getType(), cardPairRepository.findById(updatedCardPair.getId()).get()
+                .getCard1().getType());
+
     }
 
     @Test
