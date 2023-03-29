@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import jakarta.transaction.Transactional;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -207,23 +205,11 @@ class ConfigControllerTest {
         assertSame(0, configurationRepository.findAll().size());
         initialConfig.getPairs().forEach(cardPair -> assertFalse(cardPairRepository.existsById(cardPair.getId())));
     }
-
-    //public static MockHttpServletRequestBuilder post(String urlTemplate, Object... uriVariables)
-    //Create a MockHttpServletRequestBuilder for a POST request.
-    //
-    //Parameters:
-    //    urlTemplate - a URL template; the resulting URL will be encoded
-    //    uriVariables - zero or more URI variables
-    //  habe die Karten geholt die schon gespeichert sein müssten im backend
-    // trotzdem werden diese nicht erstellt ka warum
     @Test
     void addCardPairToExistingConfiguration() throws Exception {
-        final CardPair updatedCardPair = initialConfig.getPairs().stream().findFirst().get();
-        final Card card1 = updatedCardPair.getCard1();
-        final Card card2 = updatedCardPair.getCard2();
-        final CardDTO card1DTO = cardMapper.cardToCardDTO(card1);
-        final CardDTO card2DTO = cardMapper.cardToCardDTO(card2);
-        final CardPairDTO addedCardPairDTO = new CardPairDTO(card1DTO, card2DTO);
+        final Card cardText = new Card("text1", CardType.TEXT);
+        final CardPair cardPairText = new CardPair(cardText, cardText);
+        final CardPairDTO addedCardPairDTO = cardPairMapper.cardPairToCardPairDTO(cardPairText);
 
         final String bodyValue = objectMapper.writeValueAsString(addedCardPairDTO);
         final MvcResult result = mvc
@@ -269,13 +255,6 @@ class ConfigControllerTest {
         assertEquals(removedCardPairDTO.getId(), removedCardPairDTOResult.getId());
         assertTrue(removedCardPairDTO.equalsContent(removedCardPairDTOResult));
         assertSame(
-                //davor stand initialConfig.getPairs().size()-1,
-                //
-                //fande es aber komisch weil expected war 1 obeohl wir ja 3 Paare inizialisieren
-                //wenn man eins entfernt sollten ja  2 bestehen
-                //deswegen hab ich des -1 weg
-                //
-                //
             initialConfig.getPairs().size(),
             configurationRepository.findById(initialConfig.getId()).get().getPairs().size()
         );

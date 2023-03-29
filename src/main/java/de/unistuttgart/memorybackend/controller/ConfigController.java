@@ -111,7 +111,7 @@ public class ConfigController {
     }
 
     @Operation(summary = "Add multiple card pairs to a configuration")
-    @PostMapping("/{id}/cardPairs")
+    @PostMapping("/{id}/cardPair")
     @ResponseStatus(HttpStatus.CREATED)
     public CardPairDTO addCardPairDTOToConfiguration(
         @CookieValue("access_token") final String accessToken,
