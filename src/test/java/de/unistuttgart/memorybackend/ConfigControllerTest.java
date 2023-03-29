@@ -39,6 +39,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -89,6 +90,7 @@ class ConfigControllerTest {
         final CardPair cardPairText = new CardPair(cardText, cardText);
         final CardPair cardPairImage = new CardPair(cardImage, cardImage);
         final CardPair cardPairMarkdown = new CardPair(cardMarkdown, cardMarkdown);
+
 
         final Configuration configuration = new Configuration(
             new java.util.ArrayList<>(Arrays.asList(cardPairText, cardPairImage, cardPairMarkdown))
@@ -221,7 +223,6 @@ class ConfigControllerTest {
         final Card card2 = updatedCardPair.getCard2();
         final CardDTO card1DTO = cardMapper.cardToCardDTO(card1);
         final CardDTO card2DTO = cardMapper.cardToCardDTO(card2);
-
         final CardPairDTO addedCardPairDTO = new CardPairDTO(card1DTO, card2DTO);
 
         final String bodyValue = objectMapper.writeValueAsString(addedCardPairDTO);
@@ -249,12 +250,13 @@ class ConfigControllerTest {
         final CardPairDTO removedCardPairDTO = initialConfigDTO.getPairs().stream().findFirst().get();
         assert removedCardPairDTO.getId() != null;
         assertTrue(cardPairRepository.existsById(removedCardPairDTO.getId()));
-
+        String pairSize = Integer.toString(initialConfig.getPairs().size());
         final MvcResult result = mvc
             .perform(
                 delete(API_URL + "/" + initialConfig.getId() + "/cardPair/" + removedCardPairDTO.getId())
                     .cookie(cookie)
-                    .contentType(MediaType.APPLICATION_JSON)
+                        .content(pairSize)
+                        .contentType(MediaType.APPLICATION_JSON )
             )
             .andExpect(status().isOk())
             .andReturn();
@@ -305,7 +307,7 @@ class ConfigControllerTest {
             .perform(
                 put(API_URL + "/" + initialConfig.getId() + "/cardPair/" + updatedCardPair.getId())
                     .cookie(cookie)
-                    .content(bodyValue + newCard.getId() + updatedCardPair.getCard2().getId())
+                    .content(bodyValue)
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
