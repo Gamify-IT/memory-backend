@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -49,8 +48,8 @@ public class ConfigController {
             new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT))
         );
         final Configuration configuration = new Configuration(pairs);
-        Configuration savedConfig = configurationRepository.save(configuration);
-        System.out.println(savedConfig.getId());
+        final Configuration savedConfig = configurationRepository.save(configuration);
+        log.debug("Create dummy configuration with id" + savedConfig.getId());
     }
 
     @Operation(summary = "Get all configurations")

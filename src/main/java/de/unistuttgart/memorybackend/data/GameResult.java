@@ -3,8 +3,13 @@ package de.unistuttgart.memorybackend.data;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
+import java.util.Date;
 import java.util.UUID;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +32,10 @@ public class GameResult {
 
     @NotNull(message = "playerId cannot be null")
     private String playerId;
+
+    @NotNull(message = "playedDay cannot be null")
+    @CreationTimestamp
+    private Date playedDay = new Date();
 
     public GameResult(final boolean isCompleted, final UUID configurationAsUUID, final String playerId) {
         this.isCompleted = isCompleted;

@@ -4,10 +4,9 @@ import de.unistuttgart.memorybackend.clients.ResultClient;
 import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.repositories.GameResultRepository;
 import feign.FeignException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @Service
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Transactional
 public class GameResultService {
 
@@ -45,8 +45,7 @@ public class GameResultService {
         if (gameResultDTO == null || userId == null || accessToken == null) {
             throw new IllegalArgumentException("gameResultDTO or userId is null");
         }
-        final int resultScore = calculateResultScore(gameResultDTO.isFinished());
-        System.out.println(gameResultDTO.getConfigurationAsUUID());
+        final int resultScore = calculateResultScore(gameResultDTO.isCompleted());
         final OverworldResultDTO resultDTO = new OverworldResultDTO(
             gameResultDTO.getConfigurationAsUUID(),
             resultScore,
@@ -55,7 +54,7 @@ public class GameResultService {
         try {
             resultClient.submit(accessToken, resultDTO);
             final GameResult result = new @Valid GameResult(
-                gameResultDTO.isFinished(),
+                gameResultDTO.isCompleted(),
                 gameResultDTO.getConfigurationAsUUID(),
                 userId
             );
@@ -72,7 +71,7 @@ public class GameResultService {
         }
     }
 
-    public int calculateResultScore(boolean isCompleted) {
+    private int calculateResultScore(final boolean isCompleted) {
         return (int) (isCompleted ? 100 : 0);
     }
 }

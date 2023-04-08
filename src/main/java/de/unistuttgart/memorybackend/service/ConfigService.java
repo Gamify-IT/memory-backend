@@ -5,7 +5,8 @@ import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.CardPairRepository;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
-import jakarta.annotation.PostConstruct;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @ComponentScan("de.unistuttgart.memorybackend.data.mapper")
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Transactional
 public class ConfigService {
 
@@ -36,7 +38,7 @@ public class ConfigService {
      *
      * @param id the id of the configuration searching for
      * @return the found configuration
-     * @throws ResponseStatusException  when configuration by configurationName could not be found
+     * @throws ResponseStatusException (404) when configuration by configuration id could not be found
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public Configuration getConfiguration(final UUID id) {
@@ -76,7 +78,7 @@ public class ConfigService {
      * @param id               the id of the configuration that should be updated
      * @param configurationDTO configuration that should be updated
      * @return the updated configuration as DTO
-     * @throws ResponseStatusException  when configuration with the id does not exist
+     * @throws ResponseStatusException (404) when configuration with the id does not exist
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public ConfigurationDTO updateConfiguration(final UUID id, final ConfigurationDTO configurationDTO) {
@@ -94,7 +96,7 @@ public class ConfigService {
      *
      * @param id the id of the configuration that should be updated
      * @return the deleted configuration as DTO
-     * @throws ResponseStatusException  when configuration with the id does not exist
+     * @throws ResponseStatusException (404) when configuration with the id does not exist
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public ConfigurationDTO deleteConfiguration(final UUID id) {
@@ -112,7 +114,7 @@ public class ConfigService {
      * @param id          the id of the configuration where a card pair should be added
      * @param cardPairDTO the card pair that should be added
      * @return the added card pair as DTO
-     * @throws ResponseStatusException  when configuration with the id does not exist
+     * @throws ResponseStatusException (404) when configuration with the id does not exist
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public CardPairDTO addCardPairToConfiguration(final UUID id, final CardPairDTO cardPairDTO) {
@@ -132,7 +134,7 @@ public class ConfigService {
      * @param id         the id of the configuration where a card pair should be removed
      * @param cardPairId the id of the card pair that should be deleted
      * @return the deleted card pair as DTO
-     * @throws ResponseStatusException  when configuration with the id or card pair with id does not exist
+     * @throws ResponseStatusException (404) when configuration with the id or card pair with id does not exist
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public CardPairDTO removeCardPairFromConfiguration(final UUID id, final UUID cardPairId) {
@@ -160,7 +162,7 @@ public class ConfigService {
      * @param cardPairId  the id of the card pair that should be updated
      * @param cardPairDTO the content of the card pair that should be updated
      * @return the updated card pair as DTO
-     * @throws ResponseStatusException  when configuration with the id or card pair with id does not exist
+     * @throws ResponseStatusException (404) when configuration with the id or card pair with id does not exist
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public CardPairDTO updateCardPairFromConfiguration(
@@ -190,7 +192,7 @@ public class ConfigService {
      * @param cardPairId    id of searched card pair
      * @param configuration configuration in which the card pair is part of
      * @return an optional of the card pair
-     * @throws ResponseStatusException  when card pair with the id in the given configuration does not exist
+     * @throws ResponseStatusException (404) when card pair with the id in the given configuration does not exist
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     private Optional<CardPair> getCardPairInConfiguration(final UUID cardPairId, final Configuration configuration) {

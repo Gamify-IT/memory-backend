@@ -236,7 +236,7 @@ class ConfigControllerTest {
         final CardPairDTO removedCardPairDTO = initialConfigDTO.getPairs().stream().findFirst().get();
         assert removedCardPairDTO.getId() != null;
         assertTrue(cardPairRepository.existsById(removedCardPairDTO.getId()));
-        String pairSize = Integer.toString(initialConfig.getPairs().size());
+        final String pairSize = Integer.toString(initialConfig.getPairs().size());
         final MvcResult result = mvc
             .perform(
                 delete(API_URL + "/" + initialConfig.getId() + "/cardPair/" + removedCardPairDTO.getId())
