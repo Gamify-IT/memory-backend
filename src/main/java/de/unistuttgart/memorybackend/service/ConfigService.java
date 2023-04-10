@@ -11,6 +11,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -204,5 +205,19 @@ public class ConfigService {
             .parallelStream()
             .filter(filteredCardPair -> filteredCardPair.getId().equals(cardPairId))
             .findAny();
+    }
+
+    public UUID cloneConfiguration(final UUID id){
+        Configuration config = configurationRepository
+        .findById(id)
+        .orElseThrow(() ->
+            new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                String.format("Configuration with id %s not found", id)
+            )
+        );
+        Configuration cloneConfig = config.clone();
+        cloneConfig = configurationRepository.save(cloneConfig);
+        return cloneConfig.getId();
     }
 }

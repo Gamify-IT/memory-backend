@@ -3,6 +3,8 @@ package de.unistuttgart.memorybackend.data;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,4 +34,12 @@ public class Configuration {
     public void removeCardPair(final CardPair cardPair) {
         this.pairs.remove(cardPair);
     }
-}
+    @Override 
+    public Configuration clone() {
+        return new Configuration(
+            this.pairs.stream().map(CardPair::clone).collect(Collectors.toList())
+            );
+        }
+    }
+
+

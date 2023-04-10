@@ -149,4 +149,12 @@ public class ConfigController {
         log.debug("update card pair {} with {} for configuration {}", cardPairId, cardPairDTO, id);
         return configService.updateCardPairFromConfiguration(id, cardPairId, cardPairDTO);
     }
+
+    @PostMapping("/{id}/clone")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UUID cloneConfiguration(@CookieValue("acces_token") final String accessToken, @PathVariable final UUID id){
+        jwtValidatorService.validateTokenOrThrow(accessToken);
+        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        return configService.cloneConfiguration(id);
+    }
 }

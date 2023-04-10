@@ -325,4 +325,58 @@ class ConfigControllerTest {
             .andExpect(status().isNotFound())
             .andReturn();
     }
+
+    @Test
+    void testCloneConfiguration() throws Exception{
+        final MvcResult result = mvc
+            .perform(
+                post(API_URL + "/" + initialConfig.getId() + "/clone")
+                    .cookie(cookie)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isCreated())
+            .andReturn();
+        final String content = result.getResponse().getContentAsString();
+        final UUID cloneId = objectMapper.readValue(content, UUID.class);
+        assertNotEquals(initialConfig.getId(), cloneId);
+
+        assertTrue(configurationRepository.findById(cloneId).isPresent());
+
+
+        final Configuration cloneConfig = configurationRepository.findById(cloneId).get();
+        initialConfig
+            .getPairs()
+            .forEach(pair -> {
+                cloneConfig
+                    .getPairs()
+                    .forEach(clonePair -> assertNotEquals(pair.getId(), clonePair.getId()));
+                assertTrue(
+                    cloneConfig
+                        .getPairs()
+                        .stream()
+                        .anyMatch(clonePair -> pair.getCard1().getType().equals(clonePair.getCard1().getType()))
+                     
+                );
+                assertTrue(
+                    cloneConfig
+                        .getPairs()
+                        .stream()
+                        .allMatch(clonePair -> pair.getCard2().getType().equals(clonePair.getCard2().getType()))
+                );
+                assertTrue(
+                    cloneConfig
+                        .getPairs()
+                        .stream()
+                        .allMatch(clonePair -> pair.getCard1().getContent().equals(clonePair.getCard1().getContent()))
+                );
+                assertTrue(
+                    cloneConfig
+                        .getPairs()
+                        .stream()
+                        .allMatch(clonePair -> pair.getCard2().getContent().equals(clonePair.getCard2().getContent()))
+                );
+            });
+        assertNotEquals(cloneConfig, initialConfig);
+    } 
+   
 }
