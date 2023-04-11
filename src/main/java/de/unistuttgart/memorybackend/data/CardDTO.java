@@ -1,8 +1,6 @@
 package de.unistuttgart.memorybackend.data;
 
 import java.util.UUID;
-
-import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class GameResultController {
 
     @Autowired
-    GameResultService gameResultService;
+    private GameResultService gameResultService;
 
     @Autowired
     private JWTValidatorService jwtValidatorService;

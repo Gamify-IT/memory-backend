@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -49,8 +48,8 @@ public class ConfigController {
             new CardPair(new Card("text", CardType.TEXT), new Card("text", CardType.TEXT))
         );
         final Configuration configuration = new Configuration(pairs);
-        Configuration savedConfig = configurationRepository.save(configuration);
-        System.out.println(savedConfig.getId());
+        final Configuration savedConfig = configurationRepository.save(configuration);
+        log.debug("Create dummy configuration with id" + savedConfig.getId());
     }
 
     @Operation(summary = "Get all configurations")
@@ -149,5 +148,13 @@ public class ConfigController {
         jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
         log.debug("update card pair {} with {} for configuration {}", cardPairId, cardPairDTO, id);
         return configService.updateCardPairFromConfiguration(id, cardPairId, cardPairDTO);
+    }
+
+    @PostMapping("/{id}/clone")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UUID cloneConfiguration(@CookieValue("acces_token") final String accessToken, @PathVariable final UUID id) {
+        jwtValidatorService.validateTokenOrThrow(accessToken);
+        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        return configService.cloneConfiguration(id);
     }
 }
