@@ -27,9 +27,9 @@ public class CardPair {
         this.card1 = card1;
         this.card2 = card2;
     }
-    
+
     @Override
-    public CardPair clone(){
+    public CardPair clone() {
         return new CardPair(card1, card2);
     }
 }

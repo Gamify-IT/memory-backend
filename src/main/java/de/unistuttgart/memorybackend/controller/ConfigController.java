@@ -152,7 +152,7 @@ public class ConfigController {
 
     @PostMapping("/{id}/clone")
     @ResponseStatus(HttpStatus.CREATED)
-    public UUID cloneConfiguration(@CookieValue("acces_token") final String accessToken, @PathVariable final UUID id){
+    public UUID cloneConfiguration(@CookieValue("acces_token") final String accessToken, @PathVariable final UUID id) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
         return configService.cloneConfiguration(id);

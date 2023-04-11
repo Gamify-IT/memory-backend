@@ -5,9 +5,9 @@ import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.CardPairRepository;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
+import java.util.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -207,15 +207,15 @@ public class ConfigService {
             .findAny();
     }
 
-    public UUID cloneConfiguration(final UUID id){
+    public UUID cloneConfiguration(final UUID id) {
         Configuration config = configurationRepository
-        .findById(id)
-        .orElseThrow(() ->
-            new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                String.format("Configuration with id %s not found", id)
-            )
-        );
+            .findById(id)
+            .orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    String.format("Configuration with id %s not found", id)
+                )
+            );
         Configuration cloneConfig = config.clone();
         cloneConfig = configurationRepository.save(cloneConfig);
         return cloneConfig.getId();

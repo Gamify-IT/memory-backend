@@ -21,10 +21,10 @@ import de.unistuttgart.memorybackend.repositories.CardPairRepository;
 import de.unistuttgart.memorybackend.repositories.CardRepository;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,6 @@ class ConfigControllerTest {
 
     @BeforeEach
     public void createBasicData() {
-
         configurationRepository.deleteAll();
         final Card cardText = new Card("text1", CardType.TEXT);
         final Card cardImage = new Card("text2", CardType.IMAGE);
@@ -88,7 +87,6 @@ class ConfigControllerTest {
         final CardPair cardPairText = new CardPair(cardText, cardText);
         final CardPair cardPairImage = new CardPair(cardImage, cardImage);
         final CardPair cardPairMarkdown = new CardPair(cardMarkdown, cardMarkdown);
-
 
         final Configuration configuration = new Configuration(
             new java.util.ArrayList<>(Arrays.asList(cardPairText, cardPairImage, cardPairMarkdown))
@@ -205,6 +203,7 @@ class ConfigControllerTest {
         assertSame(0, configurationRepository.findAll().size());
         initialConfig.getPairs().forEach(cardPair -> assertFalse(cardPairRepository.existsById(cardPair.getId())));
     }
+
     @Test
     void addCardPairToExistingConfiguration() throws Exception {
         final Card cardText = new Card("text1", CardType.TEXT);
@@ -241,8 +240,8 @@ class ConfigControllerTest {
             .perform(
                 delete(API_URL + "/" + initialConfig.getId() + "/cardPair/" + removedCardPairDTO.getId())
                     .cookie(cookie)
-                        .content(pairSize)
-                        .contentType(MediaType.APPLICATION_JSON )
+                    .content(pairSize)
+                    .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
             .andReturn();
@@ -300,11 +299,14 @@ class ConfigControllerTest {
         assertTrue(updatedCardPairDTO.equalsContent(updatedCardPairResultDTO));
         assertEquals(newCard.getContent(), updatedCardPairResultDTO.getCard1().getContent());
         assertEquals(newCard.getType(), updatedCardPairResultDTO.getCard1().getType());
-        assertEquals(newCard.getContent(), cardPairRepository.findById(updatedCardPair.getId()).get()
-                .getCard1().getContent());
-        assertEquals(newCard.getType(), cardPairRepository.findById(updatedCardPair.getId()).get()
-                .getCard1().getType());
-
+        assertEquals(
+            newCard.getContent(),
+            cardPairRepository.findById(updatedCardPair.getId()).get().getCard1().getContent()
+        );
+        assertEquals(
+            newCard.getType(),
+            cardPairRepository.findById(updatedCardPair.getId()).get().getCard1().getType()
+        );
     }
 
     @Test
@@ -327,7 +329,7 @@ class ConfigControllerTest {
     }
 
     @Test
-    void testCloneConfiguration() throws Exception{
+    void testCloneConfiguration() throws Exception {
         final MvcResult result = mvc
             .perform(
                 post(API_URL + "/" + initialConfig.getId() + "/clone")
@@ -342,20 +344,16 @@ class ConfigControllerTest {
 
         assertTrue(configurationRepository.findById(cloneId).isPresent());
 
-
         final Configuration cloneConfig = configurationRepository.findById(cloneId).get();
         initialConfig
             .getPairs()
             .forEach(pair -> {
-                cloneConfig
-                    .getPairs()
-                    .forEach(clonePair -> assertNotEquals(pair.getId(), clonePair.getId()));
+                cloneConfig.getPairs().forEach(clonePair -> assertNotEquals(pair.getId(), clonePair.getId()));
                 assertTrue(
                     cloneConfig
                         .getPairs()
                         .stream()
                         .anyMatch(clonePair -> pair.getCard1().getType().equals(clonePair.getCard1().getType()))
-                     
                 );
                 assertTrue(
                     cloneConfig
@@ -377,6 +375,5 @@ class ConfigControllerTest {
                 );
             });
         assertNotEquals(cloneConfig, initialConfig);
-    } 
-   
+    }
 }
