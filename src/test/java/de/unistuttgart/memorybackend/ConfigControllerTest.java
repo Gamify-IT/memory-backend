@@ -329,6 +329,7 @@ class ConfigControllerTest {
     }
 
     @Test
+    @Transactional
     void testCloneConfiguration() throws Exception {
         final MvcResult result = mvc
             .perform(
@@ -359,19 +360,19 @@ class ConfigControllerTest {
                     cloneConfig
                         .getPairs()
                         .stream()
-                        .allMatch(clonePair -> pair.getCard2().getType().equals(clonePair.getCard2().getType()))
+                        .anyMatch(clonePair -> pair.getCard2().getType().equals(clonePair.getCard2().getType()))
                 );
                 assertTrue(
                     cloneConfig
                         .getPairs()
                         .stream()
-                        .allMatch(clonePair -> pair.getCard1().getContent().equals(clonePair.getCard1().getContent()))
+                        .anyMatch(clonePair -> pair.getCard1().getContent().equals(clonePair.getCard1().getContent()))
                 );
                 assertTrue(
                     cloneConfig
                         .getPairs()
                         .stream()
-                        .allMatch(clonePair -> pair.getCard2().getContent().equals(clonePair.getCard2().getContent()))
+                        .anyMatch(clonePair -> pair.getCard2().getContent().equals(clonePair.getCard2().getContent()))
                 );
             });
         assertNotEquals(cloneConfig, initialConfig);
