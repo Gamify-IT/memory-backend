@@ -29,7 +29,7 @@ public class CardPair {
     }
 
     @Override
-    public CardPair clone() {
+    public CardPair clone() { //NOSONAR
         return new CardPair(card1, card2);
     }
 }
