@@ -26,7 +26,7 @@ public class OverworldResultDTO {
      * The name of the minigame. In this case "MEMORY".
      */
     @NotNull(message = "game cannot be null")
-    final String game = "MEMORY";
+    static final String game = "MEMORY";
 
     /**
      * The ID of the configuration that was used for the game.
