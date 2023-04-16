@@ -35,7 +35,7 @@ public class Configuration {
     }
 
     @Override
-    public Configuration clone() {
-        return new Configuration(this.pairs.stream().map(CardPair::clone).collect(Collectors.toList()));
+    public Configuration clone() { //NOSONAR
+        return new Configuration(this.pairs.stream().map(CardPair::clone).toList());
     }
 }

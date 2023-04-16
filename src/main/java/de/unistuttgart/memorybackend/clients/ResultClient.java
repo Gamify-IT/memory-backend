@@ -1,7 +1,6 @@
 package de.unistuttgart.memorybackend.clients;
 
 import de.unistuttgart.memorybackend.data.OverworldResultDTO;
-import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;

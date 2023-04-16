@@ -72,6 +72,6 @@ public class GameResultService {
     }
 
     private int calculateResultScore(final boolean isCompleted) {
-        return (int) (isCompleted ? 100 : 0);
+        return (isCompleted ? 100 : 0);
     }
 }

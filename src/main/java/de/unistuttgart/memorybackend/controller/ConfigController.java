@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class ConfigController {
 
+    public static final List<String> LECTURER = List.of("lecturer");
     @Autowired
     private ConfigurationRepository configurationRepository;
 
@@ -79,7 +80,7 @@ public class ConfigController {
         @Valid @RequestBody final ConfigurationDTO configurationDTO
     ) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        jwtValidatorService.hasRolesOrThrow(accessToken, LECTURER);
         log.debug("create configuration {}", configurationDTO);
         return configService.saveConfiguration(configurationDTO);
     }
@@ -92,7 +93,7 @@ public class ConfigController {
         @Valid @RequestBody final ConfigurationDTO configurationDTO
     ) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        jwtValidatorService.hasRolesOrThrow(accessToken, LECTURER);
         log.debug("update configuration {} with {}", id, configurationDTO);
         return configService.updateConfiguration(id, configurationDTO);
     }
@@ -104,7 +105,7 @@ public class ConfigController {
         @PathVariable final UUID id
     ) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        jwtValidatorService.hasRolesOrThrow(accessToken, LECTURER);
         log.debug("delete configuration {}", id);
         return configService.deleteConfiguration(id);
     }
@@ -118,7 +119,7 @@ public class ConfigController {
         @Valid @RequestBody final CardPairDTO cardPairDTO
     ) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        jwtValidatorService.hasRolesOrThrow(accessToken, LECTURER);
         log.debug("add card pair {} to configuration {}", cardPairDTO, id);
         return configService.addCardPairToConfiguration(id, cardPairDTO);
     }
@@ -131,7 +132,7 @@ public class ConfigController {
         @PathVariable final UUID cardPairId
     ) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        jwtValidatorService.hasRolesOrThrow(accessToken, LECTURER);
         log.debug("remove card pairs {} from configuration {}", cardPairId, id);
         return configService.removeCardPairFromConfiguration(id, cardPairId);
     }
@@ -145,7 +146,7 @@ public class ConfigController {
         @Valid @RequestBody final CardPairDTO cardPairDTO
     ) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        jwtValidatorService.hasRolesOrThrow(accessToken, LECTURER);
         log.debug("update card pair {} with {} for configuration {}", cardPairId, cardPairDTO, id);
         return configService.updateCardPairFromConfiguration(id, cardPairId, cardPairDTO);
     }
@@ -154,7 +155,7 @@ public class ConfigController {
     @ResponseStatus(HttpStatus.CREATED)
     public UUID cloneConfiguration(@CookieValue("access_token") final String accessToken, @PathVariable final UUID id) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        jwtValidatorService.hasRolesOrThrow(accessToken, List.of("lecturer"));
+        jwtValidatorService.hasRolesOrThrow(accessToken, LECTURER);
         return configService.cloneConfiguration(id);
     }
 }
