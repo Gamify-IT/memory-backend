@@ -22,7 +22,7 @@ public class GameResult {
     @GeneratedValue(generator = "uuid")
     UUID id;
 
-    boolean isCompleted;
+    Boolean isFinished;
 
     @NotNull(message = "configurationAsUUID cannot be null")
     private UUID configurationAsUUID;
@@ -34,8 +34,8 @@ public class GameResult {
     @CreationTimestamp
     private Date playedDay = new Date();
 
-    public GameResult(final boolean isCompleted, final UUID configurationAsUUID, final String playerId) {
-        this.isCompleted = isCompleted;
+    public GameResult(final Boolean isFinished, final UUID configurationAsUUID, final String playerId) {
+        this.isFinished = isFinished;
         this.configurationAsUUID = configurationAsUUID;
         this.playerId = playerId;
     }

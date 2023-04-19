@@ -13,10 +13,7 @@ import org.springframework.lang.Nullable;
 @NoArgsConstructor
 public class GameResultDTO {
 
-    @Nullable
-    UUID id;
-
-    boolean isCompleted;
+    private Boolean isFinished;
 
     @NotNull(message = "configurationAsUUID cannot be null")
     private UUID configurationAsUUID;
@@ -24,9 +21,11 @@ public class GameResultDTO {
     @NotNull(message = "playerId cannot be null")
     private String playerId;
 
-    public GameResultDTO(final boolean isCompleted, final UUID configurationAsUUID, final String playerId) {
-        this.isCompleted = isCompleted;
+    public GameResultDTO(final Boolean isFinished, final UUID configurationAsUUID, final String playerId) {
+        this.isFinished = isFinished;
         this.configurationAsUUID = configurationAsUUID;
         this.playerId = playerId;
     }
+
+
 }

@@ -45,7 +45,7 @@ public class GameResultService {
         if (gameResultDTO == null || userId == null || accessToken == null) {
             throw new IllegalArgumentException("gameResultDTO or userId is null");
         }
-        final int resultScore = calculateResultScore(gameResultDTO.isCompleted());
+        final int resultScore = calculateResultScore(gameResultDTO.getIsFinished());
         final OverworldResultDTO resultDTO = new OverworldResultDTO(
             gameResultDTO.getConfigurationAsUUID(),
             resultScore,
@@ -54,7 +54,7 @@ public class GameResultService {
         try {
             resultClient.submit(accessToken, resultDTO);
             final GameResult result = new @Valid GameResult(
-                gameResultDTO.isCompleted(),
+                gameResultDTO.getIsFinished(),
                 gameResultDTO.getConfigurationAsUUID(),
                 userId
             );
@@ -71,7 +71,7 @@ public class GameResultService {
         }
     }
 
-    private int calculateResultScore(final boolean isCompleted) {
+    private int calculateResultScore(final Boolean isCompleted) {
         return (isCompleted ? 100 : 0);
     }
 }
