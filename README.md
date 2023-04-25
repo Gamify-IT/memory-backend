@@ -16,6 +16,8 @@ services.
     * [Project build](#project-build)
     * [With Docker](#with-docker)
   * [Testing Database](#testing-database)
+* [REST API](#rest-api)
+  * [Swagger-Ui](#swagger-ui)
 <!-- TOC -->
 
 ## Links
@@ -108,4 +110,16 @@ To stop and remove it simply type
 docker stop memory-database
 ```
 
+## Rest API
+Rest mappings are defined in 
+- Config
+  controller: [`src/main/java/de/unistuttgart/memorybackend/controller/ConfigController.java`](src/main/java/de/unistuttgart/memorybackend/controller/ConfigController.java)
+- Game result
+  controller: [`src/main/java/de/unistuttgart/memorybackend/controller/GameResultController.java`](src/main/java/de/unistuttgart/memorybackend/controller/GameResultController.java.java)
 
+### Swagger-Ui
+
+When the service is started (see [Getting started](#getting-started)), you can access the API documentation:
+
+Open <http://localhost/minigames/memory/api/v1/swagger-ui/index.html#/> and
+fill `http://localhost/minigames/memory/api/v1/v3/api-docs` into the input field in the navbar.
