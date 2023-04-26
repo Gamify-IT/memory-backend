@@ -72,6 +72,6 @@ public class GameResultService {
     }
 
     private int calculateResultScore(final Boolean isCompleted) {
-        return (isCompleted ? 100 : 0);
+        return (Boolean.TRUE.equals(isCompleted) ? 100 : 0);
     }
 }
