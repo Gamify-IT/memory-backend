@@ -46,10 +46,13 @@ public class GameResultService {
             throw new IllegalArgumentException("gameResultDTO or userId is null");
         }
         final int resultScore = calculateResultScore(gameResultDTO.getIsFinished());
+        final int rewards = (int) Math.ceil(resultScore / 10);
+
         final OverworldResultDTO resultDTO = new OverworldResultDTO(
             gameResultDTO.getConfigurationAsUUID(),
             resultScore,
-            userId
+            userId,
+            rewards
         );
         try {
             resultClient.submit(accessToken, resultDTO);
