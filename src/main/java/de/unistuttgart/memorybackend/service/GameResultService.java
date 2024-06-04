@@ -29,12 +29,14 @@ public class GameResultService {
     @Autowired
     GameResultRepository gameResultRepository;
 
+    int flagFirstTimeFinished = 0;
+
     /**
      * Casts a GameResultDTO to GameResult and saves it in the Database
      *
      * @param gameResultDTO extern gameResultDTO
-     * @param userId id of the user
-     * @param accessToken accessToken of the user
+     * @param userId        id of the user
+     * @param accessToken   accessToken of the user
      * @throws IllegalArgumentException if at least one of the arguments is null
      */
     public void saveGameResult(
@@ -46,7 +48,7 @@ public class GameResultService {
             throw new IllegalArgumentException("gameResultDTO or userId is null");
         }
         final int resultScore = calculateResultScore(gameResultDTO.getIsFinished());
-        final int rewards = (int) Math.ceil(resultScore / 10);
+        final int rewards = calculateRewards(resultScore);
 
         final OverworldResultDTO resultDTO = new OverworldResultDTO(
             gameResultDTO.getConfigurationAsUUID(),
@@ -59,7 +61,8 @@ public class GameResultService {
             final GameResult result = new @Valid GameResult(
                 gameResultDTO.getIsFinished(),
                 gameResultDTO.getConfigurationAsUUID(),
-                userId
+                userId,
+                rewards
             );
             gameResultRepository.save(result);
         } catch (final FeignException.BadGateway badGateway) {
@@ -76,5 +79,28 @@ public class GameResultService {
 
     private int calculateResultScore(final Boolean isCompleted) {
         return (Boolean.TRUE.equals(isCompleted) ? 100 : 0);
+    }
+
+    /**
+     * This method calculates the rewards for one memory round based on the gained scores in the
+     * current round
+     *
+     * first round: 10 rewards, second round: 5 rewards, after that: 2 rounds per finished round
+     *
+     * @param resultScore
+     * @return gained rewards
+     */
+    private int calculateRewards(final int resultScore) {
+        if (resultScore == 100 && flagFirstTimeFinished == 0) {
+            flagFirstTimeFinished += 1;
+            return 10;
+        } else if (resultScore == 100 && flagFirstTimeFinished == 1) {
+            flagFirstTimeFinished += 1;
+            return 5;
+        } else if (resultScore == 100 && flagFirstTimeFinished == 2) {
+            return 2;
+        }
+
+        return 0;
     }
 }

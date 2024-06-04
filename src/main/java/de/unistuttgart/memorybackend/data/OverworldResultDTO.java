@@ -49,7 +49,7 @@ public class OverworldResultDTO {
     String userId;
 
     /**
-     * the rewards gained by the player in this round
+     * the rewards gained by the player in this round of memory
      */
     int rewards;
 }
