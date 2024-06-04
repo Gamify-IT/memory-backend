@@ -92,15 +92,15 @@ public class GameResultService {
      */
     private int calculateRewards(final int resultScore) {
         if (resultScore == 100 && flagFirstTimeFinished == 0) {
-            flagFirstTimeFinished += 1;
+            flagFirstTimeFinished++;
             return 10;
         } else if (resultScore == 100 && flagFirstTimeFinished == 1) {
-            flagFirstTimeFinished += 1;
+            flagFirstTimeFinished++;
             return 5;
         } else if (resultScore == 100 && flagFirstTimeFinished == 2) {
             return 2;
+        } else {
+            return 0;
         }
-
-        return 0;
     }
 }
