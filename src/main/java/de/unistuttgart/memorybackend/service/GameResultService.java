@@ -61,8 +61,8 @@ public class GameResultService {
             final GameResult result = new @Valid GameResult(
                 gameResultDTO.getIsFinished(),
                 gameResultDTO.getConfigurationAsUUID(),
-                userId,
-                rewards
+                userId
+
             );
             gameResultRepository.save(result);
         } catch (final FeignException.BadGateway badGateway) {
@@ -87,7 +87,7 @@ public class GameResultService {
      *
      * first round: 10 rewards, second round: 5 rewards, after that: 2 rounds per finished round
      *
-     * @param resultScore
+     * @param resultScore score reached in this game
      * @return gained rewards
      */
     private int calculateRewards(final int resultScore) {

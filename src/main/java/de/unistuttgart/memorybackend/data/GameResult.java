@@ -34,17 +34,14 @@ public class GameResult {
     @CreationTimestamp
     private Date playedDay = new Date();
 
-    private int rewards;
 
     public GameResult(
         final Boolean isFinished,
         final UUID configurationAsUUID,
-        final String playerId,
-        final int rewards
+        final String playerId
     ) {
         this.isFinished = isFinished;
         this.configurationAsUUID = configurationAsUUID;
         this.playerId = playerId;
-        this.rewards = rewards;
     }
 }
