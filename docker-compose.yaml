@@ -83,9 +83,8 @@ services:
 
   memory-backend:
     container_name: memory-backend
-    image: ghcr.io/gamify-it/memory-backend:main
+    build: .
     restart: always
-    pull_policy: always
     expose:
       - "80"
     depends_on:

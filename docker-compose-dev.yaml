@@ -81,23 +81,6 @@ services:
       - KEYCLOAK_ISSUER=http://localhost/keycloak/realms/Gamify-IT
       - KEYCLOAK_URL=http://keycloak/keycloak/realms/Gamify-IT
 
-  memory-backend:
-    container_name: memory-backend
-    image: ghcr.io/gamify-it/memory-backend:development
-    restart: always
-    pull_policy: always
-    expose:
-      - "80"
-    depends_on:
-      - memory-db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_URL=postgresql://memory-db:5432/postgres
-      - OVERWORLD_URL=http://overworld-backend/api/v1
-      - KEYCLOAK_ISSUER=http://localhost/keycloak/realms/Gamify-IT
-      - KEYCLOAK_URL=http://keycloak/keycloak/realms/Gamify-IT
-
   #frontends
   landing-page:
     container_name: landing-page
