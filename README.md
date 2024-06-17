@@ -29,76 +29,65 @@ services.
   found [here](https://gamifyit-docs.readthedocs.io/en/latest/install-manuals/index.html).
 
 
+# Development
+
 ## Getting started
+> Beginning of additions (that work)
 
 Make sure you have the following installed:
 
-- Java: [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) or higher
+- Java: [JDK 1.17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) or higher
 - Maven: [Maven 3.6.3](https://maven.apache.org/download.cgi)
-- Docker: [Docker latest or higher](https://www.docker.com/)
-
-First you have to change the spring.datasource.username and the spring.datasource.password in the application.properties
-file. If you changed the properties of the postgres db, you also have to change spring.datasource.url.
+- Docker: [Docker](https://www.docker.com/)
+- PostgreSQL: [PostgreSQL](https://www.postgresql.org/download/)
 
 ### Run
-
-#### Docker-compose
-
-Start all dependencies with our docker-compose files.
-Check
-the [manual for starting the dependencies with docker-compose](https://github.com/Gamify-IT/docs/blob/main/dev-manuals/languages/docker/docker-compose.md)
-.
-
-#### Project build
-
+### Project build
+To build the project, run:
 ```sh
 mvn install
 ```
 
-in the folder of the project.
-Go to the target folder and run
+in the project folder.
+Then go to the target folder:
+```sh
+cd target
+```
+and run:
+```sh
+java -jar memory-backend-0.0.1-SNAPSHOT.jar
+```
+to start the application.
+
+
+### Build with docker
+To run your local changes as a docker container, with all necessary dependencies,
+build the Docker container with:
 
 ```sh
-java -jar memory-service-0.0.1-SNAPSHOT.jar
+docker compose up --build
 ```
-
-#### With Docker
-
-Build the Docker container with
-
+You can remove the containers with:
 ```sh
-docker build  -t memory-backend-dev .
+docker compose down
 ```
 
-And run it at port 8000 with
-
-```
-docker run -d -p 8000:80 -e POSTGRES_URL="postgresql://host.docker.internal:5432/postgres" -e POSTGRES_USER="postgres" -e POSTGRES_PASSWORD="postgres" --name memory-backend-dev memory-backend-dev
-```
-
-To monitor, stop and remove the container you can use the following commands:
-
+### Run local with dependencies
+To run your local build within your IDE, but also have the dependencies running in docker, follow the steps
+to build the project, then run the dependencies in docker with the following:
 ```sh
-docker ps -a -f name=memory-backend-dev
+docker compose -f docker-compose-dev.yaml up 
 ```
-
+You can remove the containers with:
 ```sh
-docker stop memory-backend-dev
+docker compose -f docker-compose-dev.yaml down
 ```
 
-```sh
-docker rm memory-backend-dev
-```
-
-To run the prebuild container use
-
-```sh
-docker run -d -p 8000:80 -e POSTGRES_URL="postgresql://host.docker.internal:5432/postgres" -e POSTGRES_USER="postgres" -e POSTGRES_PASSWORD="postgres" --name memory-backend ghcr.io/gamify-it/memory-backend:latest
-```
+> End of additions
 
 ### Testing Database
 
-to setup a database with docker for testing you can use
+To set up a database with docker for testing you can use
 
 ```sh
 docker run -d -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=postgres  --rm --name memory-database postgres
