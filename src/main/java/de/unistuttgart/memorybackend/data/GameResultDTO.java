@@ -20,10 +20,13 @@ public class GameResultDTO {
     @NotNull(message = "playerId cannot be null")
     private String playerId;
 
-    public GameResultDTO(final Boolean isFinished, final UUID configurationAsUUID, final String playerId) {
+    private int rewards;
+
+    public GameResultDTO(final Boolean isFinished, final UUID configurationAsUUID, final String playerId, final int rewards) {
         this.isFinished = isFinished;
         this.configurationAsUUID = configurationAsUUID;
         this.playerId = playerId;
+        this.rewards = rewards;
     }
 
 

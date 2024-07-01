@@ -50,6 +50,8 @@ public class GameResultService {
         final int resultScore = calculateResultScore(gameResultDTO.getIsFinished());
         final int rewards = calculateRewards(resultScore);
 
+        gameResultDTO.setRewards(rewards);
+
         final OverworldResultDTO resultDTO = new OverworldResultDTO(
             gameResultDTO.getConfigurationAsUUID(),
             resultScore,
@@ -61,7 +63,8 @@ public class GameResultService {
             final GameResult result = new @Valid GameResult(
                 gameResultDTO.getIsFinished(),
                 gameResultDTO.getConfigurationAsUUID(),
-                userId
+                userId,
+                    rewards
 
             );
             gameResultRepository.save(result);
