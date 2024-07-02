@@ -101,7 +101,7 @@ public class GameResultService {
             flagFirstTimeFinished++;
             return 5;
         } else if (resultScore == 100 && flagFirstTimeFinished == 2) {
-            return 2;
+            return 1;
         } else {
             return 0;
         }
