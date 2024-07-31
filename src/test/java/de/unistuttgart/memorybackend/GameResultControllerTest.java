@@ -108,7 +108,7 @@ class GameResultControllerTest {
 
     @Test
     void saveGameResult() throws Exception {
-        final GameResultDTO gameResultDTO = new GameResultDTO(true, UUID.randomUUID(), "123");
+        final GameResultDTO gameResultDTO = new GameResultDTO(true, UUID.randomUUID(), "123", 10);
 
         final String bodyValue = objectMapper.writeValueAsString(gameResultDTO);
         final MvcResult result = mvc

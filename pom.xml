@@ -17,7 +17,6 @@
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
 		<lombok.version>1.18.24</lombok.version>
-		<plugin.prettier.goal>write</plugin.prettier.goal>
 		<spring-cloud.version>2021.0.3</spring-cloud.version>
 		<org.springdoc.version>1.6.9</org.springdoc.version>
 	</properties>
@@ -164,34 +163,7 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.hubspot.maven.plugins</groupId>
-				<artifactId>prettier-maven-plugin</artifactId>
-				<version>0.16</version>
-				<configuration>
-					<prettierJavaVersion>1.5.0</prettierJavaVersion>
-					<printWidth>120</printWidth>
-					<tabWidth>4</tabWidth>
-					<useTabs>false</useTabs>
-					<ignoreConfigFile>true</ignoreConfigFile>
-					<ignoreEditorConfig>true</ignoreEditorConfig>
-					<!-- Use <inputGlobs> to override the default input patterns -->
-					<inputGlobs>
-						<!-- These are the default patterns, you can omit <inputGlobs> entirely unless you want to override them -->
-						<inputGlob>src/main/java/**/*.java</inputGlob>
-						<inputGlob>src/test/java/**/*.java</inputGlob>
-					</inputGlobs>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>${plugin.prettier.goal}</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			</plugin>		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

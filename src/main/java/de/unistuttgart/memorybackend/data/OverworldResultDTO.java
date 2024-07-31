@@ -47,4 +47,9 @@ public class OverworldResultDTO {
     @NotNull(message = "user cannot be null")
     @NotBlank(message = "user cannot be blank")
     String userId;
+
+    /**
+     * the rewards gained by the player in this round of memory
+     */
+    int rewards;
 }
