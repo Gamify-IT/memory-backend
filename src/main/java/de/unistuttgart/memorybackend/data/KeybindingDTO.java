@@ -1,5 +1,8 @@
 package de.unistuttgart.memorybackend.data;
 
+/**
+ * The KeybindingDTO.class contains all data that is retrieved from the overworld-backend
+ */
 public class KeybindingDTO {
     private String binding;
     private String key;

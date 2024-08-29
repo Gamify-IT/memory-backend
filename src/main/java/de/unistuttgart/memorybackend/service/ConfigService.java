@@ -64,6 +64,15 @@ public class ConfigService {
             );
     }
 
+    /**
+     * Search a configuration by given id and get volume level from overworld-backend
+     *
+     * @param id the id of the configuration searching for
+     * @param accessToken the users access token
+     * @return the found configuration
+     * @throws ResponseStatusException  when configuration by configurationName could not be found
+     * @throws IllegalArgumentException if at least one of the arguments is null
+     */
     public Configuration getAllConfigurations(final UUID id, final String accessToken) {
         if (id == null) {
             throw new IllegalArgumentException("id is null");
