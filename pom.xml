@@ -17,7 +17,7 @@
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
 		<lombok.version>1.18.24</lombok.version>
-		<spring-cloud.version>2021.0.3</spring-cloud.version>
+		<spring-cloud.version>2022.0.1</spring-cloud.version>
 		<org.springdoc.version>1.6.9</org.springdoc.version>
 	</properties>
 	<dependencies>
