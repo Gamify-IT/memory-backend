@@ -21,6 +21,8 @@ public class Configuration {
     @OneToMany(cascade = CascadeType.ALL)
     List<CardPair> pairs;
 
+    Integer volumeLevel;
+
     public Configuration(final List<CardPair> pairs) {
         this.pairs = pairs;
     }

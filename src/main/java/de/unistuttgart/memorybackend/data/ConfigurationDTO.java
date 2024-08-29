@@ -22,6 +22,8 @@ public class ConfigurationDTO {
 
     List<CardPairDTO> pairs;
 
+    Integer volumeLevel;
+
     public ConfigurationDTO(final List<CardPairDTO> pairs) {
         this.pairs = pairs;
     }
