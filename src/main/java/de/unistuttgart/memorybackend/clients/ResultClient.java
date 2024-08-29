@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
- * This client submits OverworldResultDTOs to the overworld backend
+ * This client submits OverworldResultDTOs to the Overworld backend
  */
 @FeignClient(value = "resultClient", url = "${overworld.url}/internal")
 public interface ResultClient {
