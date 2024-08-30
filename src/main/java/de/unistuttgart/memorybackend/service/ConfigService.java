@@ -1,5 +1,7 @@
 package de.unistuttgart.memorybackend.service;
 
+import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
+import de.unistuttgart.memorybackend.clients.OverworldClient;
 import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
@@ -34,6 +36,12 @@ public class ConfigService {
     @Autowired
     CardPairRepository cardPairRepository;
 
+    @Autowired
+    private OverworldClient overworldClient;
+
+    @Autowired
+    private JWTValidatorService jwtValidatorService;
+
     /**
      * Search a configuration by given id
      *
@@ -54,6 +62,44 @@ public class ConfigService {
                     String.format("There is no configuration with id %s.", id)
                 )
             );
+    }
+
+    /**
+     * Search a configuration by given id and get volume level from overworld-backend
+     *
+     * @param id the id of the configuration searching for
+     * @param accessToken the users access token
+     * @return the found configuration
+     * @throws ResponseStatusException  when configuration by configurationName could not be found
+     * @throws IllegalArgumentException if at least one of the arguments is null
+     */
+    public Configuration getAllConfigurations(final UUID id, final String accessToken) {
+        if (id == null) {
+            throw new IllegalArgumentException("id is null");
+        }
+        final String userId = jwtValidatorService.extractUserId(accessToken);
+
+        KeybindingDTO keyBindingVolumeLevel = overworldClient.getKeybindingStatistic(userId, "VOLUME_LEVEL", accessToken);
+        Integer volumeLevel = Integer.parseInt(keyBindingVolumeLevel.getKey());
+
+
+        Configuration config = configurationRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                String.format("There is no configuration with id %s.", id)
+                        )
+                );
+        config.setVolumeLevel(volumeLevel);
+        return configurationRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                String.format("There is no configuration with id %s.", id)
+                        )
+                );
     }
 
     /**

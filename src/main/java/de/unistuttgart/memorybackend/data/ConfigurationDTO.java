@@ -22,6 +22,11 @@ public class ConfigurationDTO {
 
     List<CardPairDTO> pairs;
 
+    /**
+     * The volume level that is setted by the player.
+     */
+    Integer volumeLevel;
+
     public ConfigurationDTO(final List<CardPairDTO> pairs) {
         this.pairs = pairs;
     }
