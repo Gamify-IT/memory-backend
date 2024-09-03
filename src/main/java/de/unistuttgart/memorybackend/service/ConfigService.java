@@ -81,7 +81,7 @@ public class ConfigService {
 
         KeybindingDTO keyBindingVolumeLevel = overworldClient.getKeybindingStatistic(userId, "VOLUME_LEVEL", accessToken);
         Integer volumeLevel = Integer.parseInt(keyBindingVolumeLevel.getKey());
-        
+
         Configuration config = configurationRepository
                 .findById(id)
                 .orElseThrow(() ->
