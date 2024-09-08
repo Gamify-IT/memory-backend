@@ -49,7 +49,9 @@ public class OverworldResultDTO {
     String userId;
 
     /**
-     * the rewards gained by the player in this round of memory
+     * The rewards gained by the player in this round of memory.
      */
+    @Min(value = 0, message = "Rewards cannot be less than " + 0)
+    @Max(value = 10, message = "Score cannot be higher than " + 100)
     int rewards;
 }
