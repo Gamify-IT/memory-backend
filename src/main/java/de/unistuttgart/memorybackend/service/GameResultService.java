@@ -85,25 +85,31 @@ public class GameResultService {
     }
 
     /**
-     * This method calculates the rewards for one memory round based on the gained scores in the
-     * current round
+     * This method calculates the rewards for a memory round based on the score achieved in the
+     * current game.
      *
-     * first round: 10 rewards, second round: 5 rewards, after that: 2 rounds per finished round
+     * - First round with a score of 100: 10 rewards
+     * - Second round with a score of 100: 5 rewards
+     * - For the third and all subsequent rounds with a score of 100: 1 reward per round
      *
-     * @param resultScore score reached in this game
-     * @return gained rewards
+     * @param resultScore score achieved in this round (should be 100 for rewards)
+     * @return gained rewards based on the number of times a score of 100 has been achieved
      */
+
     private int calculateRewards(final int resultScore) {
-        if (resultScore == 100 && flagFirstTimeFinished == 0) {
-            flagFirstTimeFinished++;
-            return 10;
-        } else if (resultScore == 100 && flagFirstTimeFinished == 1) {
-            flagFirstTimeFinished++;
-            return 5;
-        } else if (resultScore == 100 && flagFirstTimeFinished == 2) {
-            return 1;
+        if (resultScore == 100) {
+            if (flagFirstTimeFinished == 0) {
+                flagFirstTimeFinished++;
+                return 10;
+            } else if (flagFirstTimeFinished == 1) {
+                flagFirstTimeFinished++;
+                return 5;
+            } else {
+                return 1;
+            }
         } else {
             return 0;
         }
     }
+
 }

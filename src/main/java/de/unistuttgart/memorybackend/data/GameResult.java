@@ -34,6 +34,7 @@ public class GameResult {
     @CreationTimestamp
     private Date playedDay = new Date();
 
+
     int rewards;
 
     public GameResult(
