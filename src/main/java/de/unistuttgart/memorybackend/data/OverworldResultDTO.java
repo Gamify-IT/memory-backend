@@ -51,5 +51,7 @@ public class OverworldResultDTO {
     /**
      * the rewards gained by the player in this round of memory
      */
+    @Min(value = 0, message = "Score cannot be less than " + 0)
+    @Max(value = 10, message = "Score cannot be higher than " + 10)
     int rewards;
 }
