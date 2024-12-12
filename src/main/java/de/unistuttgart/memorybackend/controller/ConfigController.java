@@ -8,6 +8,8 @@ import de.unistuttgart.memorybackend.service.ConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
+
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -52,6 +54,15 @@ public class ConfigController {
         final Configuration savedConfig = configurationRepository.save(configuration);
         log.debug("Create dummy configuration with id" + savedConfig.getId());
     }
+
+    @Operation(summary = "Add an image to be used in a memory configuration")
+    @PostMapping("/images")
+    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @Valid @RequestBody ImageDTO imageDTO) {
+        jwtValidatorService.validateTokenOrThrow(accessToken);
+        log.debug("get all configurations");
+        return configService.addImage(imageDTO);
+    }
+
 
     @Operation(summary = "Get all configurations")
     @GetMapping("")
