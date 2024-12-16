@@ -63,6 +63,14 @@ public class ConfigController {
         return configService.addImage(imageDTO);
     }
 
+    @Operation(summary = "Retrieve an image")
+    @GetMapping("/images/{id}")
+    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID id) {
+        jwtValidatorService.validateTokenOrThrow(accessToken);
+        log.debug("get image");
+        return configService.getImage(id);
+    }
+
 
     @Operation(summary = "Get all configurations")
     @GetMapping("")
