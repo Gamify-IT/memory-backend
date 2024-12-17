@@ -5,6 +5,8 @@ import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
 import de.unistuttgart.memorybackend.service.ConfigService;
+import feign.form.FormData;
+import feign.form.FormProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,9 +60,11 @@ public class ConfigController {
 
     @Operation(summary = "Add an image to be used in a memory configuration")
     @PostMapping("/images")
-    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @Valid @RequestBody ImageDTO imageDTO) {
+    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @RequestBody FormData formData) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         log.debug("get all configurations");
+        System.out.println(formData);
+        ImageDTO imageDTO = new ImageDTO();
         return configService.addImage(imageDTO);
     }
 
