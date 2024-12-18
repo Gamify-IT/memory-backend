@@ -24,5 +24,5 @@ public class Image {
 
     private UUID imageUUID;
 
-    private File image;
+    private byte[] image;
 }

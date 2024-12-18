@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Import({ JWTValidatorService.class })
 @RestController
@@ -60,20 +62,22 @@ public class ConfigController {
 
     @Operation(summary = "Add an image to be used in a memory configuration")
     @PostMapping("/images")
-    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @RequestBody FormData formData) {
+    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @RequestParam("uuid") UUID uuid, @RequestParam("image") MultipartFile image) throws IOException {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        log.debug("get all configurations");
-        System.out.println(formData);
-        ImageDTO imageDTO = new ImageDTO();
+        byte[] imageBytes = image.getBytes();
+        if (imageBytes.length == 0) {
+            throw new IllegalArgumentException("The uploaded file is empty.");
+        }
+        ImageDTO imageDTO = new ImageDTO(uuid, imageBytes);
         return configService.addImage(imageDTO);
     }
 
     @Operation(summary = "Retrieve an image")
-    @GetMapping("/images/{id}")
-    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID id) {
+    @GetMapping("/images/{uuid}")
+    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         log.debug("get image");
-        return configService.getImage(id);
+        return configService.getImage(uuid);
     }
 
 

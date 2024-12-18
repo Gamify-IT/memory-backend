@@ -17,5 +17,5 @@ public class ImageDTO {
     @NotNull(message = "imageUUID cannot be null")
     private UUID configurationAsUUID;
 
-    private File image;
+    private byte[] image;
 }
