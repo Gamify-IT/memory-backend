@@ -18,8 +18,6 @@ public class Image {
 
     private UUID uuid;
 
-    @Lob
     @Column(name = "picByte", length = 5000)
     private byte[] picByte;
-
 }
