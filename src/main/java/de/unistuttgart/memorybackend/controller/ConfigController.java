@@ -9,10 +9,12 @@ import de.unistuttgart.memorybackend.service.ConfigService;
 import de.unistuttgart.memorybackend.utility.ImageUtility;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -80,14 +82,25 @@ public class ConfigController {
     @Operation(summary = "Retrieve an image")
     @GetMapping("/images/{uuid}")
     @Transactional
-    public ResponseEntity<byte[]> getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid) {
+    public void/*ResponseEntity<byte[]>*/ getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid, HttpServletResponse response) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         log.debug("get image");
         final Optional<Image> image = imageRepository.findByUuid(uuid);
-        HttpHeaders headers = new HttpHeaders();
+        /*HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setContentLength(image.get().getPicByte().length);
-        return new ResponseEntity<>(ImageUtility.decompressImage(image.get().getPicByte()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(ImageUtility.decompressImage(image.get().getPicByte()), headers, HttpStatus.OK);*/
+        byte[] imageBytes = image.get().getPicByte();
+        response.setContentType("image/jpeg"); // Adjust content type
+        response.setContentLength(imageBytes.length);
+
+        try (OutputStream out = response.getOutputStream()) {
+            out.write(imageBytes);
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing image to response", e);
+        }
+
     }
 
 
