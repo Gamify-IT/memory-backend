@@ -20,7 +20,9 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -81,10 +83,11 @@ public class ConfigController {
     public ResponseEntity<byte[]> getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         log.debug("get image");
-        final Optional<Image> dbImage = imageRepository.findByUuid(uuid);
-        return ResponseEntity
-                .ok()
-                .body(ImageUtility.decompressImage(dbImage.get().getPicByte()));
+        final Optional<Image> image = imageRepository.findByUuid(uuid);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setContentLength(image.get().getPicByte().length);
+        return new ResponseEntity<>(ImageUtility.decompressImage(image.get().getPicByte()), headers, HttpStatus.OK);
     }
 
 
