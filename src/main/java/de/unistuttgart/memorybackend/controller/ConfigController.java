@@ -9,6 +9,7 @@ import de.unistuttgart.memorybackend.service.ConfigService;
 import de.unistuttgart.memorybackend.utility.ImageUtility;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
@@ -76,6 +77,7 @@ public class ConfigController {
 
     @Operation(summary = "Retrieve an image")
     @GetMapping("/images/{uuid}")
+    @Transactional
     public ResponseEntity<byte[]> getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         log.debug("get image");
