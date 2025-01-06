@@ -15,6 +15,8 @@ import jakarta.validation.Valid;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -91,9 +93,12 @@ public class ConfigController {
         headers.setContentLength(image.get().getPicByte().length);
         return new ResponseEntity<>(ImageUtility.decompressImage(image.get().getPicByte()), headers, HttpStatus.OK);*/
         byte[] imageBytes = image.get().getPicByte();
-        if (imageBytes == null || imageBytes.length == 0) {
-            throw new RuntimeException("No image data found for ID: " + uuid);
-        }        response.setContentType("image/jpeg");
+        try {
+            Files.write(Paths.get("retrieved_image.jpg"), imageBytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing image to file", e);
+        }
+        response.setContentType("image/jpeg");
         response.setContentLength(imageBytes.length);
 
         try (OutputStream out = response.getOutputStream()) {
