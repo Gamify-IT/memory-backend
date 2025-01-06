@@ -91,7 +91,9 @@ public class ConfigController {
         headers.setContentLength(image.get().getPicByte().length);
         return new ResponseEntity<>(ImageUtility.decompressImage(image.get().getPicByte()), headers, HttpStatus.OK);*/
         byte[] imageBytes = image.get().getPicByte();
-        response.setContentType("image/jpeg"); // Adjust content type
+        if (imageBytes == null || imageBytes.length == 0) {
+            throw new RuntimeException("No image data found for ID: " + uuid);
+        }        response.setContentType("image/jpeg");
         response.setContentLength(imageBytes.length);
 
         try (OutputStream out = response.getOutputStream()) {
