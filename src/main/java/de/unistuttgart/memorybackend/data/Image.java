@@ -20,9 +20,6 @@ public class Image {
     private long imageID;
 
     private UUID uuid;
-
-    @Lob
-    @JdbcTypeCode(Types.BINARY)
-    @Column(name = "picByte", length = 5000)
+    
     private byte[] picByte;
 }
