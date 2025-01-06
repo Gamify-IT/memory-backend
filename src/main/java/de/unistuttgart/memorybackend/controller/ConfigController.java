@@ -79,7 +79,7 @@ public class ConfigController {
     public ResponseEntity<byte[]> getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         log.debug("get image");
-        final Optional<Image> dbImage = imageRepository.findByUUID(uuid);
+        final Optional<Image> dbImage = imageRepository.findByUuid(uuid);
         return ResponseEntity
                 .ok()
                 .body(ImageUtility.decompressImage(dbImage.get().getPicByte()));
