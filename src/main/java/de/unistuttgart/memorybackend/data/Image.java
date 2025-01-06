@@ -22,6 +22,6 @@ public class Image {
 
     private UUID uuid;
 
-    @JdbcTypeCode(Types.VARBINARY)
+    @Lob
     private byte[] picByte;
 }
