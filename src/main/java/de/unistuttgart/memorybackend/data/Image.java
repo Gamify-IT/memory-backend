@@ -2,8 +2,6 @@ package de.unistuttgart.memorybackend.data;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import java.sql.Types;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +18,7 @@ public class Image {
     private long imageID;
 
     private UUID uuid;
-    
+
+    @Column(name = "picByte", columnDefinition="bytea")
     private byte[] picByte;
 }
