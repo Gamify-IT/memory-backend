@@ -4,23 +4,24 @@ import de.unistuttgart.gamifyit.authentificationvalidator.JWTValidatorService;
 import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
+import de.unistuttgart.memorybackend.repositories.ImageRepository;
 import de.unistuttgart.memorybackend.service.ConfigService;
-import feign.form.FormData;
-import feign.form.FormProperty;
+import de.unistuttgart.memorybackend.utility.ImageUtility;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +46,9 @@ public class ConfigController {
     @Autowired
     private ConfigurationMapper configurationMapper;
 
+    @Autowired
+    private ImageRepository imageRepository;
+
     @PostConstruct
     public void createDummyData() {
         List<CardPair> pairs = Arrays.asList(
@@ -62,22 +66,24 @@ public class ConfigController {
 
     @Operation(summary = "Add an image to be used in a memory configuration")
     @PostMapping("/images")
-    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @RequestParam("uuid") UUID uuid, @RequestParam("image") MultipartFile image) throws IOException {
+    public Image uploadImage(@CookieValue("access_token") final String accessToken, @RequestParam("uuid") UUID uuid,
+                             @RequestParam("image") MultipartFile file) throws IOException {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        byte[] imageBytes = image.getBytes();
-        if (imageBytes.length == 0) {
-            throw new IllegalArgumentException("The uploaded file is empty.");
-        }
-        ImageDTO imageDTO = new ImageDTO(uuid, imageBytes);
-        return configService.addImage(imageDTO);
+        log.debug("get image");
+        return imageRepository.save(Image.builder()
+                .uuid(uuid)
+                .picByte(ImageUtility.compressImage(file.getBytes())).build());
     }
 
     @Operation(summary = "Retrieve an image")
     @GetMapping("/images/{uuid}")
-    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid) {
+    public ResponseEntity<byte[]> getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         log.debug("get image");
-        return configService.getImage(uuid);
+        final Optional<Image> dbImage = imageRepository.findByImageUUID(uuid);
+        return ResponseEntity
+                .ok()
+                .body(ImageUtility.decompressImage(dbImage.get().getPicByte()));
     }
 
 
