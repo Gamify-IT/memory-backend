@@ -6,28 +6,19 @@ import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
 import de.unistuttgart.memorybackend.repositories.ImageRepository;
 import de.unistuttgart.memorybackend.service.ConfigService;
-import de.unistuttgart.memorybackend.utility.ImageUtility;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,9 +43,6 @@ public class ConfigController {
     @Autowired
     private ConfigurationMapper configurationMapper;
 
-    @Autowired
-    private ImageRepository imageRepository;
-
     @PostConstruct
     public void createDummyData() {
         List<CardPair> pairs = Arrays.asList(
@@ -72,42 +60,29 @@ public class ConfigController {
 
     @Operation(summary = "Add an image to be used in a memory configuration")
     @PostMapping("/images")
-    public Image uploadImage(@CookieValue("access_token") final String accessToken, @RequestParam("uuid") UUID uuid,
+    @ResponseStatus(HttpStatus.CREATED)
+    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @RequestParam("uuid") UUID uuid,
                              @RequestParam("image") MultipartFile file) throws IOException {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        log.debug("get image");
-        return imageRepository.save(Image.builder()
-                .uuid(uuid)
-                .picByte(ImageUtility.compressImage(file.getBytes())).build());
+
+        byte[] imageBytes = file.getBytes();
+        if (imageBytes.length == 0) {
+            throw new IllegalArgumentException("Die hochgeladene Datei ist leer.");
+        }
+
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setImageUUID(uuid);
+        imageDTO.setImage(imageBytes);
+
+        return configService.addImage(imageDTO);
     }
 
     @Operation(summary = "Retrieve an image")
     @GetMapping("/images/{uuid}")
     @Transactional
-    public void/*ResponseEntity<byte[]>*/ getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid, HttpServletResponse response) {
+    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final UUID uuid, HttpServletResponse response) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
-        log.debug("get image");
-        final Optional<Image> image = imageRepository.findByUuid(uuid);
-        /*HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.setContentLength(image.get().getPicByte().length);
-        return new ResponseEntity<>(ImageUtility.decompressImage(image.get().getPicByte()), headers, HttpStatus.OK);*/
-        byte[] imageBytes = image.get().getPicByte();
-        try {
-            Files.write(Paths.get("retrieved_image.jpg"), imageBytes);
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing image to file", e);
-        }
-        response.setContentType("image/jpeg");
-        response.setContentLength(imageBytes.length);
-
-        try (OutputStream out = response.getOutputStream()) {
-            out.write(imageBytes);
-            out.flush();
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing image to response", e);
-        }
-
+        return configService.getImage(uuid);
     }
 
 

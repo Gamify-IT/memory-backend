@@ -5,10 +5,12 @@ import de.unistuttgart.memorybackend.clients.OverworldClient;
 import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
+import de.unistuttgart.memorybackend.data.mapper.ImageMapper;
 import de.unistuttgart.memorybackend.repositories.CardPairRepository;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import de.unistuttgart.memorybackend.repositories.ImageRepository;
 import lombok.AccessLevel;
@@ -46,6 +48,9 @@ public class ConfigService {
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    ImageMapper imageMapper;
 
     /**
      * Search a configuration by given id
@@ -270,4 +275,16 @@ public class ConfigService {
         cloneConfig = configurationRepository.save(cloneConfig);
         return cloneConfig.getId();
     }
+
+    public ImageDTO addImage(final ImageDTO imageDTO) {
+        imageRepository.save(imageMapper.imageDTOToImage(imageDTO));
+        return imageDTO;
+    }
+
+    public ImageDTO getImage(UUID uuid) {
+        Image image = imageRepository.findByImageUUID(uuid.toString());
+        return imageMapper.imageToImageDTO(image);
+    }
+
+
 }
