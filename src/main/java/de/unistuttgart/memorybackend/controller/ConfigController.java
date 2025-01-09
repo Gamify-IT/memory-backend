@@ -80,7 +80,7 @@ public class ConfigController {
     @Operation(summary = "Retrieve an image")
     @GetMapping("/images/{uuid}")
     @Transactional
-    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final String uuid, HttpServletResponse response) {
+    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final String uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
         return configService.getImage(UUID.fromString(uuid));
     }

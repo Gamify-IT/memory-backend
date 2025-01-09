@@ -50,7 +50,7 @@ public class ConfigService {
     private ImageRepository imageRepository;
 
     @Autowired
-    ImageMapper imageMapper;
+    private ImageMapper imageMapper;
 
     /**
      * Search a configuration by given id
@@ -282,7 +282,7 @@ public class ConfigService {
     }
 
     public ImageDTO getImage(UUID uuid) {
-        Image image = imageRepository.findByImageUUID(uuid.toString());
+        Image image = imageRepository.findByImageUUID(uuid);
         return imageMapper.imageToImageDTO(image);
     }
 
