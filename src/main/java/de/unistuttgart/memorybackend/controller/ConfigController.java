@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import jdk.jfr.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -78,7 +80,7 @@ public class ConfigController {
     }
 
     @Operation(summary = "Retrieve an image")
-    @GetMapping("/images/{uuid}")
+    @GetMapping(value = "/images/{uuid}", produces = "image/png")
     @Transactional
     public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final String uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
