@@ -76,7 +76,7 @@ public class ConfigController {
     }
 
     @Operation(summary = "Retrieve an image")
-    @GetMapping(value = "/images/{uuid}", produces = "image/png")
+    @GetMapping("/images/{uuid}")
     @Transactional
     public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final String uuid) {
         jwtValidatorService.validateTokenOrThrow(accessToken);
