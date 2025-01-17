@@ -65,7 +65,7 @@ public class ConfigController {
 
         byte[] imageBytes = file.getBytes();
         if (imageBytes.length == 0) {
-            throw new IllegalArgumentException("Die hochgeladene Datei ist leer.");
+            throw new IllegalArgumentException("The uploaded file is empty.");
         }
 
         ImageDTO imageDTO = new ImageDTO();
