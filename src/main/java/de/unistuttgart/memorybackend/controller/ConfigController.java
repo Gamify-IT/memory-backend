@@ -7,7 +7,9 @@ import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
 import de.unistuttgart.memorybackend.service.ConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Import({ JWTValidatorService.class })
 @RestController
@@ -52,6 +55,34 @@ public class ConfigController {
         final Configuration savedConfig = configurationRepository.save(configuration);
         log.debug("Create dummy configuration with id" + savedConfig.getId());
     }
+
+    @Operation(summary = "Add an image to be used in a memory configuration")
+    @PostMapping("/images")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ImageDTO addImage(@CookieValue("access_token") final String accessToken, @RequestParam("uuid") UUID uuid,
+                             @RequestParam("image") MultipartFile file) throws IOException {
+        jwtValidatorService.validateTokenOrThrow(accessToken);
+
+        byte[] imageBytes = file.getBytes();
+        if (imageBytes.length == 0) {
+            throw new IllegalArgumentException("The uploaded file is empty.");
+        }
+
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setImageUUID(uuid);
+        imageDTO.setImage(imageBytes);
+
+        return configService.addImage(imageDTO);
+    }
+
+    @Operation(summary = "Retrieve an image")
+    @GetMapping("/images/{uuid}")
+    @Transactional
+    public ImageDTO getImage(@CookieValue("access_token") final String accessToken, @PathVariable final String uuid) {
+        jwtValidatorService.validateTokenOrThrow(accessToken);
+        return configService.getImage(UUID.fromString(uuid));
+    }
+
 
     @Operation(summary = "Get all configurations")
     @GetMapping("")

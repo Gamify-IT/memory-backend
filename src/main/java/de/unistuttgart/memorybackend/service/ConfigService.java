@@ -5,15 +5,19 @@ import de.unistuttgart.memorybackend.clients.OverworldClient;
 import de.unistuttgart.memorybackend.data.*;
 import de.unistuttgart.memorybackend.data.mapper.CardPairMapper;
 import de.unistuttgart.memorybackend.data.mapper.ConfigurationMapper;
+import de.unistuttgart.memorybackend.data.mapper.ImageMapper;
 import de.unistuttgart.memorybackend.repositories.CardPairRepository;
 import de.unistuttgart.memorybackend.repositories.ConfigurationRepository;
+
 import java.util.*;
+import java.util.stream.Collectors;
+
+import de.unistuttgart.memorybackend.repositories.ImageRepository;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,6 +45,12 @@ public class ConfigService {
 
     @Autowired
     private JWTValidatorService jwtValidatorService;
+
+    @Autowired
+    private ImageRepository imageRepository;
+
+    @Autowired
+    private ImageMapper imageMapper;
 
     /**
      * Search a configuration by given id
@@ -275,4 +285,16 @@ public class ConfigService {
         cloneConfig = configurationRepository.save(cloneConfig);
         return cloneConfig.getId();
     }
+
+    public ImageDTO addImage(final ImageDTO imageDTO) {
+        imageRepository.save(imageMapper.imageDTOToImage(imageDTO));
+        return imageDTO;
+    }
+
+    public ImageDTO getImage(UUID uuid) {
+        Image image = imageRepository.findByImageUUID(uuid);
+        return imageMapper.imageToImageDTO(image);
+    }
+
+
 }
